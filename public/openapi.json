@@ -1,0 +1,223 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Pinoy Dev Quotes API",
+    "description": "A free, serverless API for Filipino programmer quotes, featuring Bisaya, Tagalog, Ilocano, Kapampangan, Waray, Hiligaynon, and Bikolano humor, hugot, and dev wisdom.",
+    "version": "1.0.0",
+    "contact": {
+      "name": "John Lemar Gonzales",
+      "url": "https://github.com/CyberSphinxxx/pinoy-dev-quotes-api"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "servers": [
+    { "url": "https://pinoy-dev-quotes-api.vercel.app", "description": "Production" },
+    { "url": "http://localhost:3000", "description": "Local Development" }
+  ],
+  "paths": {
+    "/api/health": {
+      "get": {
+        "summary": "Health Check",
+        "tags": ["System"],
+        "responses": {
+          "200": {
+            "description": "API is healthy",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "example": "ok" },
+                    "timestamp": { "type": "string", "format": "date-time" },
+                    "version": { "type": "string", "example": "v1" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/random": {
+      "get": {
+        "summary": "Get Random Quote(s)",
+        "tags": ["Quotes"],
+        "parameters": [
+          { "name": "count", "in": "query", "description": "Number of random quotes (max 50)", "schema": { "type": "integer", "default": 1, "maximum": 50 } },
+          { "name": "format", "in": "query", "description": "Response format", "schema": { "type": "string", "enum": ["json", "text", "markdown"] } }
+        ],
+        "responses": { "200": { "description": "One or more random quotes" } }
+      }
+    },
+    "/api/v1/qotd": {
+      "get": {
+        "summary": "Quote of the Day",
+        "description": "Returns a deterministic quote based on today's date — the same quote for everyone all day.",
+        "tags": ["Quotes"],
+        "responses": { "200": { "description": "Today's quote" } }
+      }
+    },
+    "/api/v1/quotes": {
+      "get": {
+        "summary": "Get All Quotes (Paginated)",
+        "tags": ["Quotes"],
+        "parameters": [
+          { "name": "page", "in": "query", "schema": { "type": "integer", "default": 1 } },
+          { "name": "limit", "in": "query", "description": "Quotes per page (max 100)", "schema": { "type": "integer", "default": 10, "maximum": 100 } },
+          { "name": "format", "in": "query", "schema": { "type": "string", "enum": ["json", "text", "markdown"] } }
+        ],
+        "responses": { "200": { "description": "Paginated list of quotes with meta" } }
+      }
+    },
+    "/api/v1/quotes/{id}": {
+      "get": {
+        "summary": "Get Quote by ID",
+        "tags": ["Quotes"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": { "description": "The requested quote" },
+          "404": { "description": "Quote not found" }
+        }
+      }
+    },
+    "/api/v1/quotes/{id}/image": {
+      "get": {
+        "summary": "Generate OG Image for Quote",
+        "description": "Dynamically generates a 1200×630 PNG card featuring the quote text and author. Perfect for social media sharing.",
+        "tags": ["Quotes"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": { "description": "PNG image buffer", "content": { "image/png": {} } },
+          "404": { "description": "Quote not found" },
+          "503": { "description": "Font not loaded — image generation unavailable" }
+        }
+      }
+    },
+    "/api/v1/search": {
+      "get": {
+        "summary": "Search Quotes",
+        "description": "Full-text search across quote text, English translation, author, and tags.",
+        "tags": ["Quotes"],
+        "parameters": [
+          { "name": "q", "in": "query", "required": true, "description": "Search keyword", "schema": { "type": "string" } },
+          { "name": "format", "in": "query", "schema": { "type": "string", "enum": ["json", "text", "markdown"] } }
+        ],
+        "responses": {
+          "200": { "description": "Array of matching quotes" },
+          "400": { "description": "Missing query parameter 'q'" }
+        }
+      }
+    },
+    "/api/v1/stats": {
+      "get": {
+        "summary": "API Statistics",
+        "tags": ["Meta"],
+        "responses": { "200": { "description": "Total quotes, dialect counts, and dialect list" } }
+      }
+    },
+    "/api/v1/dialects": {
+      "get": {
+        "summary": "List Available Dialects",
+        "tags": ["Meta"],
+        "responses": { "200": { "description": "Array of unique dialect strings" } }
+      }
+    },
+    "/api/v1/dialect/{dialect}": {
+      "get": {
+        "summary": "Filter Quotes by Dialect",
+        "tags": ["Quotes"],
+        "parameters": [
+          { "name": "dialect", "in": "path", "required": true, "schema": { "type": "string" }, "description": "e.g. bisaya, tagalog, ilocano, kapampangan, waray, hiligaynon, bikolano" }
+        ],
+        "responses": {
+          "200": { "description": "Array of quotes for that dialect" },
+          "404": { "description": "No quotes found for dialect" }
+        }
+      }
+    },
+    "/api/v1/dialect/{dialect}/random": {
+      "get": {
+        "summary": "Random Quote from a Specific Dialect",
+        "tags": ["Quotes"],
+        "parameters": [
+          { "name": "dialect", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "A single random quote from the specified dialect" },
+          "404": { "description": "No quotes found for dialect" }
+        }
+      }
+    },
+    "/api/v1/embed": {
+      "get": {
+        "summary": "Get Embeddable Widget",
+        "description": "Returns an HTML/JS snippet to embed a random quote widget on any webpage.",
+        "tags": ["Tools"],
+        "responses": { "200": { "description": "HTML snippet" } }
+      }
+    },
+    "/api/v1/cors-check": {
+      "get": {
+        "summary": "CORS Configuration Check",
+        "description": "Returns your detected origin and confirms CORS settings.",
+        "tags": ["Tools"],
+        "responses": { "200": { "description": "CORS status" } }
+      }
+    },
+    "/api/v1/feed.xml": {
+      "get": {
+        "summary": "RSS Feed",
+        "description": "Returns an RSS 2.0 XML feed of all quotes.",
+        "tags": ["Tools"],
+        "responses": {
+          "200": { "description": "RSS XML document", "content": { "application/xml": {} } }
+        }
+      }
+    },
+    "/api/v1/graphql": {
+      "post": {
+        "summary": "GraphQL Endpoint",
+        "description": "Execute GraphQL queries. Supports: quote(id), quotes(dialect, tag, limit, offset), randomQuote(dialect), search(q), qotd, stats, dialects.",
+        "tags": ["GraphQL"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "query": { "type": "string", "example": "{ quotes(limit: 3) { id quote author dialect } }" }
+                }
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "GraphQL response" } }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Quote": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "dialect": { "type": "string" },
+          "quote": { "type": "string" },
+          "english_translation": { "type": "string" },
+          "author": { "type": "string" },
+          "tags": { "type": "array", "items": { "type": "string" } },
+          "date_added": { "type": "string", "format": "date-time" },
+          "source": { "type": "string" }
+        }
+      }
+    }
+  }
+}
