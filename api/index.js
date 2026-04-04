@@ -96,7 +96,7 @@ app.use('/api/v1', v1);
 
 // Backward Compatibility /api/random -> /api/v1/random
 app.get('/api/random', (req, res) => res.redirect(301, '/api/v1/random'));
-app.get('/api/dialect/:dialect', (req, res) => res.redirect(301, `/api/v1/dialect/${req.params.dialect}`));
+app.get('/api/dialect/:dialect', (req, res) => res.redirect(301, `/api/v1/dialect/${encodeURIComponent(req.params.dialect)}`));
 
 // --- Error Handling ---
 
