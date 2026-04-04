@@ -46,7 +46,18 @@ A free, serverless API for Filipino developer quotes, featuring Bisaya and Tagal
 - **URL:** `/api/v1/random`
 - **Method:** `GET`
 - **Output:** A single random quote object.
-- **Caching**: 1 minute.
+- **Caching**: No Caching (`no-store`) to ensure randomness.
+
+**Sample Response:**
+```json
+{
+  "id": 1,
+  "dialect": "bisaya",
+  "quote": "Maypa ang bug, pirmi nimo ginapangita. Ako tawon, kalimtan lang.",
+  "english_translation": "It's better to be a bug, you always search for it. Me, I'm just forgotten.",
+  "author": "Anonymous Dev"
+}
+```
 
 ### 4. Filter by Dialect
 - **URL:** `/api/v1/dialect/:dialect`
