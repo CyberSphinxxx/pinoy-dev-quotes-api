@@ -1,0 +1,72 @@
+[
+  {
+    "id": 1,
+    "dialect": "bisaya",
+    "quote": "Maypa ang bug, pirmi nimo ginapangita. Ako tawon, kalimtan lang.",
+    "english_translation": "It's better to be a bug, you always search for it. Me, I'm just forgotten.",
+    "author": "Anonymous Dev"
+  },
+  {
+    "id": 2,
+    "dialect": "bisaya",
+    "quote": "Ang coding murag gugma, sakit sa ulo pero lami kung mag-work na.",
+    "english_translation": "Coding is like love, it's a headache but feels good once it works.",
+    "author": "Cebuano Dev"
+  },
+  {
+    "id": 3,
+    "dialect": "bisaya",
+    "quote": "Commit na, ayaw na pag-expect nga ma-merge ka sa iyang kasing-kasing.",
+    "english_translation": "Just commit, don't expect to be merged into their heart.",
+    "author": "Davao Dev"
+  },
+  {
+    "id": 4,
+    "dialect": "bisaya",
+    "quote": "Sige ka'g 'Fixing bugs' pero ang problem sa inyong relasyon, wala gihapon na-fix.",
+    "english_translation": "You're always 'Fixing bugs' but the problem in your relationship still isn't fixed.",
+    "author": "Bitter Dev"
+  },
+  {
+    "id": 5,
+    "dialect": "bisaya",
+    "quote": "Dili tanan 'resolved' sa Jira, resolved na sa life.",
+    "english_translation": "Not everything 'resolved' in Jira is resolved in life.",
+    "author": "Senior Dev"
+  },
+  {
+    "id": 6,
+    "dialect": "bisaya",
+    "quote": "Deploy na ta sa production, basin didto nimo makit-an ang imong forever.",
+    "english_translation": "Let's deploy to production, maybe you'll find your forever there.",
+    "author": "Optimistic Junior"
+  },
+  {
+    "id": 7,
+    "dialect": "tagalog",
+    "quote": "Para kang semicolon, laging nawawala kung kailan kailangan kita.",
+    "english_translation": "You're like a semicolon, always missing when I need you.",
+    "author": "Tagalog Dev"
+  },
+  {
+    "id": 8,
+    "dialect": "tagalog",
+    "quote": "Sana ang pag-ibig parang Git, pwedeng i-rollback pag nagkamali.",
+    "english_translation": "I wish love was like Git, you could rollback when you make a mistake.",
+    "author": "Modern Pinoy"
+  },
+  {
+    "id": 9,
+    "dialect": "tagalog",
+    "quote": "Hindi lahat ng 'Null' ay walang laman, minsan nandoon ang sakit na hindi mo makita.",
+    "english_translation": "Not all 'Null' is empty, sometimes that's where the pain you can't see is.",
+    "author": "Hugot King"
+  },
+  {
+    "id": 10,
+    "dialect": "tagalog",
+    "quote": "Ang pag-ibig ay parang JavaScript, magulo pero kailangan mong intindihin.",
+    "english_translation": "Love is like JavaScript, it's messy but you have to understand it.",
+    "author": "JS Enthusiast"
+  }
+]
