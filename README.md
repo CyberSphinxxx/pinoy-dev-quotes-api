@@ -74,10 +74,10 @@ To prevent abuse, the API includes rate limiting:
 
 ## 🛠️ Usage Example
 
-Fetch a random quote using JavaScript:
+Fetch a random quote:
 
 ```javascript
-fetch('https://your-vercel-deployment.vercel.app/api/v1/random')
+fetch('https://pinoy-dev-quotes-api.vercel.app/api/v1/random')
   .then(response => response.json())
   .then(data => {
     console.log(`${data.quote} - ${data.author}`);
@@ -87,9 +87,24 @@ fetch('https://your-vercel-deployment.vercel.app/api/v1/random')
 Filter for Bisaya quotes:
 
 ```javascript
-fetch('https://your-vercel-deployment.vercel.app/api/v1/dialect/bisaya')
+fetch('https://pinoy-dev-quotes-api.vercel.app/api/v1/dialect/bisaya')
   .then(response => response.json())
   .then(data => console.log(data));
+```
+
+## 🧪 Testing with HTTPie
+
+If you have [HTTPie](https://httpie.io/) installed, you can test the API directly from your terminal:
+
+```bash
+# Test root endpoint
+http GET https://pinoy-dev-quotes-api.vercel.app/
+
+# Get a random quote
+http GET https://pinoy-dev-quotes-api.vercel.app/api/v1/random
+
+# Filter by dialect
+http GET https://pinoy-dev-quotes-api.vercel.app/api/v1/dialect/bisaya
 ```
 
 ## 📦 Deployment to Vercel
