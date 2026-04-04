@@ -5,14 +5,30 @@ const compression = require('compression');
 const rateLimit = require('express-rate-limit');
 const quotes = require('../quotes.json');
 
+// Modular Routers
+const graphqlRouter = require('./graphql');
+const ogRouter = require('./og');
+const feedRouter = require('./feed');
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // --- Security Middleware ---
-app.use(helmet()); // Basic security headers
-app.use(cors());   // Enable CORS for all origins
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+      scriptSrcAttr: ["'unsafe-inline'"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com"],
+      imgSrc: ["'self'", "data:", "blob:"],
+      connectSrc: ["'self'"],
+    },
+  },
+}));
+app.use(cors());   
 
-// Rate Limiting: 100 requests per 15 minutes
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
@@ -26,55 +42,137 @@ const limiter = rateLimit({
 app.use('/api/', limiter);
 
 // --- Performance Middleware ---
-app.use(compression()); // Gzip compression
+app.use(compression());
+app.set('etag', true); // Enable ETags for smart caching
 
-// Helper to set caching headers
-const setCache = (res, seconds = 60) => {
-  res.set('Cache-Control', `public, s-maxage=${seconds}, stale-while-revalidate=${seconds / 2}`);
+// --- Static Files ---
+const path = require('path');
+app.use(express.static(path.join(__dirname, '../public')));
+app.use('/public', express.static(path.join(__dirname, '../public'))); // Mount under /public too to avoid breaking existing links
+
+// Custom middleware to log requests
+app.use((req, res, next) => {
+  if (process.env.NODE_ENV !== 'production') {
+    const time = new Date().toISOString();
+    console.log(`[${time}] ${req.method} ${req.originalUrl}`);
+  }
+  next();
+});
+
+// Helper: check if data looks like a quote object
+const isQuoteData = (data) => {
+  if (Array.isArray(data)) return data.length > 0 && data[0].quote;
+  return data && data.quote;
 };
 
-// --- Routes ---
+// Helper to wrap JSON responses to standard format
+const respondWithMeta = (res, data, meta = {}, statusCode = 200, cacheConfig = null) => {
+  if (cacheConfig) {
+    res.set('Cache-Control', cacheConfig);
+  }
+  
+  // Format check — only apply text/markdown to quote-shaped data
+  if (res.req.query.format === 'text' && isQuoteData(data)) {
+    res.set('Content-Type', 'text/plain');
+    if (Array.isArray(data)) {
+        return res.status(statusCode).send(data.map(q => `"${q.quote}" - ${q.author}`).join('\n'));
+    }
+    return res.status(statusCode).send(`"${data.quote}" - ${data.author}`);
+  } else if (res.req.query.format === 'markdown' && isQuoteData(data)) {
+    res.set('Content-Type', 'text/markdown');
+    if (Array.isArray(data)) {
+        return res.status(statusCode).send(data.map(q => `> ${q.quote}\n> _- ${q.author}_`).join('\n\n'));
+    }
+    return res.status(statusCode).send(`> ${data.quote}\n> _- ${data.author}_`);
+  }
 
-// 1. Root Information
-app.get('/', (req, res) => {
-  res.json({
-    message: "Welcome to the Pinoy Dev Quotes API! 🇵🇭💻",
-    description: "A free serverless API for Filipino programmer humor and hugot.",
-    version: "v1",
-    endpoints: {
-      health: "/api/health",
-      random: "/api/v1/random",
-      filter_by_dialect: "/api/v1/dialect/:dialect"
+  res.status(statusCode).json({
+    success: statusCode >= 200 && statusCode < 300,
+    meta: {
+      timestamp: new Date().toISOString(),
+      ...meta,
     },
-    repository: "https://github.com/CyberSphinxxx/pinoy-dev-quotes-api"
+    data
   });
-});
-
-// 2. Health Check
-app.get('/api/health', (req, res) => {
-  res.json({
-    status: "ok",
-    timestamp: new Date().toISOString(),
-    version: "v1"
-  });
-});
+};
 
 // --- API v1 Endpoints ---
-
 const v1 = express.Router();
+
+// Stats
+v1.get('/stats', (req, res) => {
+  const dialects = new Set(quotes.map(q => q.dialect));
+  respondWithMeta(res, {
+    total_quotes: quotes.length,
+    total_dialects: dialects.size,
+    dialects: Array.from(dialects)
+  }, {}, 200, 'public, s-maxage=3600');
+});
+
+// Dialects list
+v1.get('/dialects', (req, res) => {
+  const dialects = Array.from(new Set(quotes.map(q => q.dialect)));
+  respondWithMeta(res, dialects, { count: dialects.length }, 200, 'public, s-maxage=3600');
+});
+
+// Quote of the Day (seeded random based on date)
+v1.get('/qotd', (req, res) => {
+  const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+  // Simple seed generator from string
+  let seed = 0;
+  for(let i=0; i<today.length; i++) seed += today.charCodeAt(i);
+  const qotdIndex = seed % quotes.length;
+  
+  respondWithMeta(res, quotes[qotdIndex], { type: 'qotd', date: today }, 200, 'public, s-maxage=3600');
+});
 
 // Random Quote
 v1.get('/random', (req, res) => {
-  res.set('Cache-Control', 'no-store'); // Ensure randomness
-  const randomIndex = Math.floor(Math.random() * quotes.length);
-  res.json(quotes[randomIndex]);
+  const count = parseInt(req.query.count) || 1;
+  const maxSafeCount = Math.min(count, 50); // limit to 50
+  
+  if (maxSafeCount === 1) {
+    const randomIndex = Math.floor(Math.random() * quotes.length);
+    return respondWithMeta(res, quotes[randomIndex], { is_random: true }, 200, 'no-store');
+  }
+
+  // Shuffle array and take N
+  const shuffled = [...quotes].sort(() => 0.5 - Math.random());
+  const selected = shuffled.slice(0, maxSafeCount);
+  
+  respondWithMeta(res, selected, { count: selected.length, is_random: true }, 200, 'no-store');
+});
+
+// Search
+v1.get('/search', (req, res) => {
+  const q = req.query.q;
+  if (!q) return res.status(400).json({ error: "Missing search query parameter 'q'." });
+  
+  const qLower = q.toLowerCase();
+  const results = quotes.filter(quoteObj => 
+    quoteObj.quote.toLowerCase().includes(qLower) || 
+    quoteObj.english_translation.toLowerCase().includes(qLower) ||
+    quoteObj.author.toLowerCase().includes(qLower) ||
+    (quoteObj.tags && quoteObj.tags.some(tag => tag.toLowerCase().includes(qLower)))
+  );
+
+  respondWithMeta(res, results, { query: q, count: results.length });
+});
+
+// Random by Dialect — MUST be registered BEFORE /dialect/:dialect to avoid being swallowed
+v1.get('/dialect/:dialect/random', (req, res) => {
+    const dialect = req.params.dialect.toLowerCase().trim();
+    const filteredQuotes = quotes.filter(q => q.dialect.toLowerCase() === dialect);
+    if (filteredQuotes.length === 0) return res.status(404).json({ error: `No quotes found for dialect: '${dialect}'` });
+    
+    const randomIndex = Math.floor(Math.random() * filteredQuotes.length);
+    respondWithMeta(res, filteredQuotes[randomIndex], { dialect, is_random: true }, 200, 'no-store');
 });
 
 // Filter by Dialect
 v1.get('/dialect/:dialect', (req, res) => {
   const dialect = req.params.dialect.toLowerCase().trim();
   
-  // Basic sanitization: only allow alphanumeric characters
   if (!/^[a-z0-9]+$/i.test(dialect)) {
     return res.status(400).json({ error: "Invalid dialect format." });
   }
@@ -82,30 +180,99 @@ v1.get('/dialect/:dialect', (req, res) => {
   const filteredQuotes = quotes.filter(q => q.dialect.toLowerCase() === dialect);
 
   if (filteredQuotes.length > 0) {
-    setCache(res, 300); // Cache success for 5 minutes
-    res.json(filteredQuotes);
+    respondWithMeta(res, filteredQuotes, { dialect, count: filteredQuotes.length }, 200, 'public, s-maxage=300');
   } else {
-    res.status(404).json({
-      error: `No quotes found for dialect: '${dialect}'`,
-      available_dialects: ["bisaya", "tagalog"]
-    });
+    res.status(404).json({ error: `No quotes found for dialect: '${dialect}'` });
   }
 });
 
+// Get all quotes (Pagination)
+v1.get('/quotes', (req, res) => {
+  const page = Math.max(1, parseInt(req.query.page) || 1);
+  const limit = Math.max(1, Math.min(parseInt(req.query.limit) || 10, 100));
+  
+  const startIndex = (page - 1) * limit;
+  const endIndex = startIndex + limit;
+  const paginatedResults = quotes.slice(startIndex, endIndex);
+
+  respondWithMeta(res, paginatedResults, { 
+      page, limit, total: quotes.length, total_pages: Math.ceil(quotes.length / limit)
+  });
+});
+
+// Get Quote by ID
+v1.get('/quotes/:id', (req, res) => {
+  const id = parseInt(req.params.id);
+  const quoteObj = quotes.find(q => q.id === id);
+
+  if (!quoteObj) {
+    return res.status(404).json({ error: "Quote not found." });
+  }
+  
+  respondWithMeta(res, quoteObj, { id }, 200, 'public, s-maxage=3600');
+});
+
+// Embed Widget
+v1.get('/embed', (req, res) => {
+  const baseUrl = `${req.protocol}://${req.get('host')}`;
+  const snippet = `<!-- Pinoy Dev Quotes Widget -->
+<div id="pinoy-quote-widget"></div>
+<script>
+(function() {
+  fetch('${baseUrl}/api/v1/random')
+    .then(r => r.json())
+    .then(d => {
+      const q = d.data;
+      document.getElementById('pinoy-quote-widget').innerHTML =
+        '<blockquote style="font-family:sans-serif;padding:16px 24px;border-left:4px solid #0ea5e9;background:#0f172a;color:#f8fafc;border-radius:8px;max-width:480px">' +
+        '<p style="font-size:18px;margin:0 0 8px">"' + q.quote + '"</p>' +
+        '<p style="font-size:14px;color:#94a3b8;margin:0 0 4px">' + q.english_translation + '</p>' +
+        '<footer style="font-size:13px;color:#38bdf8;margin-top:12px">— ' + q.author + ' | ' + q.dialect + '</footer>' +
+        '</blockquote>';
+    });
+})();
+</script>`;
+  
+  respondWithMeta(res, { snippet, usage: 'Paste this HTML into any webpage to display a random Pinoy Dev Quote.' });
+});
+
+// CORS Check
+v1.get('/cors-check', (req, res) => {
+  const origin = req.get('origin') || req.get('referer') || 'No origin detected';
+  respondWithMeta(res, {
+    cors_enabled: true,
+    your_origin: origin,
+    allowed_origins: '*',
+    allowed_methods: ['GET', 'POST', 'OPTIONS'],
+    message: 'CORS is enabled for all origins. You can call this API from any domain.'
+  });
+});
+
+// Mount Image Generator
+v1.use('/quotes', ogRouter);
+
 app.use('/api/v1', v1);
 
-// Backward Compatibility /api/random -> /api/v1/random
+// Backward Compatibility Redirects
 app.get('/api/random', (req, res) => res.redirect(301, '/api/v1/random'));
 app.get('/api/dialect/:dialect', (req, res) => res.redirect(301, `/api/v1/dialect/${encodeURIComponent(req.params.dialect)}`));
 
-// --- Error Handling ---
+// Mount GraphQL
+app.use('/api/v1/graphql', graphqlRouter);
 
-// 404 Handler for API
+// Mount RSS
+app.use('/api/v1/feed.xml', feedRouter);
+
+// Health Check
+app.get('/api/health', (req, res) => {
+  res.json({ status: "ok", timestamp: new Date().toISOString(), version: "v1" });
+});
+
+// --- Error Handling ---
 app.use('/api/*', (req, res) => {
   res.status(404).json({ error: "API endpoint not found." });
 });
 
-// Generic Error Handler
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({
@@ -114,7 +281,6 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Start server for local testing
 if (require.main === module) {
   app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
