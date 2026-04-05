@@ -8,6 +8,7 @@ const QuoteType = new GraphQLObjectType({
   fields: {
     id: { type: GraphQLInt },
     dialect: { type: GraphQLString },
+    language: { type: GraphQLString },
     quote: { type: GraphQLString },
     english_translation: { type: GraphQLString },
     author: { type: GraphQLString },
@@ -40,6 +41,7 @@ const RootQuery = new GraphQLObjectType({
       type: new GraphQLList(QuoteType),
       args: { 
         dialect: { type: GraphQLString },
+        language: { type: GraphQLString },
         tag: { type: GraphQLString },
         limit: { type: GraphQLInt },
         offset: { type: GraphQLInt }
@@ -48,6 +50,9 @@ const RootQuery = new GraphQLObjectType({
         let result = quotes;
         if (args.dialect) {
           result = result.filter(q => q.dialect.toLowerCase() === args.dialect.toLowerCase());
+        }
+        if (args.language) {
+          result = result.filter(q => q.language && q.language.toLowerCase() === args.language.toLowerCase());
         }
         if (args.tag) {
           result = result.filter(q => q.tags && q.tags.some(t => t.toLowerCase() === args.tag.toLowerCase()));
@@ -64,12 +69,16 @@ const RootQuery = new GraphQLObjectType({
     randomQuote: {
       type: QuoteType,
       args: {
-        dialect: { type: GraphQLString }
+        dialect: { type: GraphQLString },
+        language: { type: GraphQLString }
       },
       resolve(parent, args) {
         let pool = quotes;
         if (args.dialect) {
           pool = pool.filter(q => q.dialect.toLowerCase() === args.dialect.toLowerCase());
+        }
+        if (args.language) {
+          pool = pool.filter(q => q.language && q.language.toLowerCase() === args.language.toLowerCase());
         }
         return pool[Math.floor(Math.random() * pool.length)];
       }
