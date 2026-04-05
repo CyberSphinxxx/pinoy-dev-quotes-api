@@ -1,5 +1,13 @@
 ---
+/**
+ * OWNS: Navigation Header Component
+ * DO: Add navigation links and global actions like theme toggling.
+ * DON'T: Add page-specific navigation here.
+ */
+
+import ThemeToggle from './ThemeToggle.astro';
 ---
+
 <nav class="navbar">
   <div class="container nav-content">
     <div class="brand">
@@ -8,71 +16,99 @@
         <span class="brand-text">Pinoy <span class="gradient-text">Dev Quotes</span></span>
       </a>
     </div>
-    <ul class="nav-links">
-      <li><a href="/">Home</a></li>
-      <li><a href="/docs">Docs</a></li>
-      <li><a href="/changelog">Changelog</a></li>
-      <li><a href="https://github.com/CyberSphinxxx/pinoy-dev-quotes-api" target="_blank" rel="noopener noreferrer" class="github-link">GitHub</a></li>
-    </ul>
+    <div class="nav-actions">
+      <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/docs">Docs</a></li>
+        <li><a href="/changelog">Changelog</a></li>
+        <li><a href="https://github.com/CyberSphinxxx/pinoy-dev-quotes-api" target="_blank" rel="noopener noreferrer" class="github-link">GitHub</a></li>
+      </ul>
+      <ThemeToggle />
+    </div>
   </div>
 </nav>
 
 <style>
   .navbar {
-    padding: 20px 0;
-    border-bottom: 1px solid var(--glass-border);
-    background: rgba(15, 23, 42, 0.8);
+    padding: var(--space-4) 0;
+    border-bottom: 1px solid var(--color-glass-border);
+    background: var(--color-glass-bg);
     backdrop-filter: blur(8px);
     position: sticky;
     top: 0;
     z-index: 100;
+    display: flex;
+    align-items: center;
+    min-height: 72px; /* Set a consistent height */
   }
   .nav-content {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    width: 100%;
   }
   .brand a {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: var(--space-2);
     text-decoration: none;
     font-weight: 700;
     font-size: 1.25rem;
-    color: var(--text-primary);
+    color: var(--color-text-primary);
+    white-space: nowrap;
   }
   .emoji {
     font-size: 1.5rem;
   }
+  .nav-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-6);
+    flex-shrink: 0;
+  }
   .nav-links {
     display: flex;
-    gap: 32px;
+    gap: var(--space-6);
     list-style: none;
     align-items: center;
+    margin: 0;
+    padding: 0;
   }
   .nav-links a {
     text-decoration: none;
-    color: var(--text-secondary);
-    font-size: 14px;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-base);
     font-weight: 500;
-    transition: color 0.2s;
+    transition: color var(--duration-base);
   }
   .nav-links a:hover {
-    color: var(--brand-400);
+    color: var(--color-brand-primary);
   }
   .github-link {
-    background: var(--glass-bg);
+    background: rgba(255, 255, 255, 0.05);
     padding: 6px 14px;
-    border-radius: 8px;
-    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-glass-border);
+  }
+  [data-theme="light"] .github-link {
+    background: rgba(0, 0, 0, 0.03);
   }
   .github-link:hover {
-    border-color: var(--brand-400);
+    border-color: var(--color-brand-primary);
   }
 
-  @media (max-width: 640px) {
+  @media (max-width: 900px) {
     .nav-links {
-      gap: 16px;
+      gap: var(--space-4);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .nav-links {
+      display: none;
+    }
+    .nav-actions {
+      gap: var(--space-3);
     }
   }
 </style>
