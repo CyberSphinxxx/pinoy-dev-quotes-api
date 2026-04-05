@@ -1,4 +1,9 @@
 ---
+/**
+ * OWNS: Application Footer
+ * DO: Add copyright information and global external links.
+ * DON'T: Add navigation links that belong in the Navbar.
+ */
 ---
 <footer class="footer">
   <div class="container footer-content">
@@ -15,34 +20,34 @@
 
 <style>
   .footer {
-    padding: 48px 0;
-    border-top: 1px solid var(--glass-border);
-    margin-top: 80px;
+    padding: var(--space-12) 0;
+    border-top: 1px solid var(--color-glass-border);
+    margin-top: var(--space-24);
     background: rgba(15, 23, 42, 0.4);
-    color: var(--text-muted);
-    font-size: 14px;
+    color: var(--color-text-muted);
+    font-size: var(--font-size-base);
     text-align: center;
   }
   .footer-content {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: var(--space-4);
     align-items: center;
   }
   .footer-links {
     display: flex;
-    gap: 16px;
+    gap: var(--space-4);
     align-items: center;
   }
   .footer-links a {
-    color: var(--brand-400);
+    color: var(--color-brand-muted);
     text-decoration: none;
-    transition: color 0.2s;
+    transition: color var(--duration-base);
   }
   .footer-links a:hover {
-    color: var(--text-primary);
+    color: var(--color-text-primary);
   }
   .divider {
-    color: var(--glass-border);
+    color: var(--color-glass-border);
   }
 </style>
