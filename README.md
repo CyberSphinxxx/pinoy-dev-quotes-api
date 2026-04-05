@@ -27,15 +27,14 @@ A free, serverless API for Filipino developer quotes — featuring **7 Philippin
 
 ## ⚡ Key Features
 
-- **7 Dialects**: Bisaya, Tagalog, Ilocano, Kapampangan, Waray, Hiligaynon, Bikolano
+- **7 Dialects & Specific Languages**: Bisaya (Cebuano), Tagalog (Filipino), Ilocano, Kapampangan, Waray, Hiligaynon, Bikolano
 - **REST + GraphQL**: Choose your preferred query interface
-- **OG Image Cards**: Dynamically generated PNG images for social sharing
-- **Full-Text Search**: Search across quotes, translations, authors, and tags
-- **Interactive Playground**: Beautiful landing page with a live API tester
+- **OG Image Cards**: Dynamically generated PNG images with dialect/language metadata
+- **API Key Authentication**: Support for tiered rate limits (up to 1,000 req/15 min)
+- **Interactive Playground**: Beautiful landing page with a live API tester and code snippets
 - **Multiple Formats**: JSON, plain text, or markdown output
 - **RSS Feed**: Subscribe to quotes via any RSS reader
 - **Embeddable Widget**: Drop a quote widget into any webpage
-- **Security**: Helmet headers, rate limiting (100 req/15 min), CORS
 - **Performance**: Gzip compression, ETag support, CDN-aware caching
 - **Versioned API**: Future-proof `/api/v1` routing
 
@@ -45,6 +44,7 @@ A free, serverless API for Filipino developer quotes — featuring **7 Philippin
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | `GET` | `/` | Interactive API documentation page |
+| `GET` | `/api/v1` | Root API index with ready-to-use SDK snippets |
 | `GET` | `/api/health` | Health check (`{ status: "ok" }`) |
 
 ### Quotes
@@ -54,96 +54,61 @@ A free, serverless API for Filipino developer quotes — featuring **7 Philippin
 | `GET` | `/api/v1/qotd` | Quote of the Day (same for everyone, changes daily) |
 | `GET` | `/api/v1/quotes` | All quotes, paginated. `?page=1&limit=10` |
 | `GET` | `/api/v1/quotes/:id` | Get a specific quote by ID |
-| `GET` | `/api/v1/quotes/:id/image` | Generate a 1200×630 PNG OG card for the quote |
+| `GET` | `/api/v1/quotes/:id/image` | Generate a 1200×630 PNG OG card with language labels |
 | `GET` | `/api/v1/search?q=...` | Full-text search across quotes, translations, authors, tags |
 
-### Dialects
+### tools
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | `GET` | `/api/v1/dialects` | List all available dialects |
-| `GET` | `/api/v1/dialect/:dialect` | Get all quotes for a specific dialect |
 | `GET` | `/api/v1/dialect/:dialect/random` | Random quote from a specific dialect |
-
-### Tools
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `GET` | `/api/v1/embed` | Get an HTML/JS embed widget snippet |
-| `GET` | `/api/v1/cors-check` | Check CORS configuration for your origin |
-| `GET` | `/api/v1/feed.xml` | RSS 2.0 feed of all quotes |
+| `GET` | `/api/v1/feed.xml` | RSS 2.0 feed with rich descriptions |
 | `POST` | `/api/v1/graphql` | GraphQL endpoint for flexible queries |
 
-### Response Formats
+## 🛡️ Authentication & Rate Limits
 
-Append `?format=text` or `?format=markdown` to any quote endpoint for alternative output:
+The API offers two tiers of access:
+
+- **Public Access**: No key required. Limited to **100 requests per 15 minutes**.
+- **Premium Access**: Requires an API key. Increased to **1,000 requests per 15 minutes**.
+
+### How to use your API Key:
+Include your key via the `Authorization` header or as a query parameter:
 ```bash
-# Plain text
-curl "https://pinoy-dev-quotes-api.vercel.app/api/v1/random?format=text"
-# → "Maypa ang bug, pirmi nimo ginapangita..." - Anonymous Dev
+# via Header
+curl -H "Authorization: Bearer <your_key>" https://api.url...
 
-# Markdown
-curl "https://pinoy-dev-quotes-api.vercel.app/api/v1/random?format=markdown"
-# → > Maypa ang bug, pirmi nimo ginapangita...
-# → > _- Anonymous Dev_
+# via Query Param
+curl "https://api.url...?api_key=<your_key>"
 ```
 
 ## 🛠️ Usage Examples
-
-### JavaScript
-```javascript
-const res = await fetch('https://pinoy-dev-quotes-api.vercel.app/api/v1/random');
-const { data } = await res.json();
-console.log(`"${data.quote}" — ${data.author}`);
-```
-
-### Python
-```python
-import requests
-
-r = requests.get("https://pinoy-dev-quotes-api.vercel.app/api/v1/random")
-quote = r.json()["data"]
-print(f'"{quote["quote"]}" — {quote["author"]}')
-```
 
 ### GraphQL
 ```graphql
 # POST to /api/v1/graphql
 {
-  quotes(dialect: "bisaya", limit: 3) {
+  quotes(language: "Cebuano", limit: 3) {
     id
     quote
-    english_translation
+    dialect
+    language
     author
-    tags
   }
 }
 ```
 
-### HTTPie
-```bash
-# Random quote
-http GET pinoy-dev-quotes-api.vercel.app/api/v1/random
-
-# Search for "hugot"
-http GET "pinoy-dev-quotes-api.vercel.app/api/v1/search?q=hugot"
-
-# Quote of the Day
-http GET pinoy-dev-quotes-api.vercel.app/api/v1/qotd
-```
-
-## 📦 Sample Response
-
-All JSON endpoints return a standardized wrapper:
-
+### JSON Response Structure
 ```json
 {
   "success": true,
   "meta": {
-    "timestamp": "2024-01-01T12:00:00.000Z",
-    "is_random": true
+    "timestamp": "2024-01-01T12:00:00.000Z"
   },
   "data": {
     "id": 1,
     "dialect": "bisaya",
+    "language": "Cebuano",
     "quote": "Maypa ang bug, pirmi nimo ginapangita. Ako tawon, kalimtan lang.",
     "english_translation": "It's better to be a bug, you always search for it. Me, I'm just forgotten.",
     "author": "Anonymous Dev",
@@ -154,35 +119,23 @@ All JSON endpoints return a standardized wrapper:
 }
 ```
 
-## 🛡️ Security & Rate Limiting
-
-- **Rate Limit**: 100 requests per 15 minutes per IP
-- **Headers**: Secured with `helmet`
-- **CORS**: Enabled for all origins
-- **Response**: `429 Too Many Requests` when limit exceeded
-
 ## 📝 Project Structure
 
 ```
 ├── api/
-│   ├── index.js       # Main Express app — REST endpoints & middleware
+│   ├── index.js       # Main Express app & middleware
 │   ├── graphql.js     # GraphQL schema & resolvers
-│   ├── og.js          # OG image generation (Satori + resvg)
+│   ├── snippets.js    # SDK/Code snippets module
+│   ├── og.js          # OG image generation
 │   └── feed.js        # RSS feed generator
 ├── public/
-│   ├── index.html     # Interactive API docs landing page
-│   ├── openapi.json   # OpenAPI 3.0 specification
-│   └── fonts/         # Inter font for image generation
-├── quotes.json        # Quote database (20 quotes, 7 dialects)
-├── vercel.json        # Vercel routing config
-└── package.json       # Dependencies & scripts
+│   ├── index.html     # Interactive documentation
+│   ├── openapi.json   # OpenAPI 3.0 spec
+│   └── fonts/         # Inter font for cards
+├── quotes.json        # Quote database (20 quotes)
+├── vercel.json        # Vercel deployment config
+└── package.json       # Node.js dependencies
 ```
-
-## 📦 Deployment to Vercel
-
-1. Install the Vercel CLI: `npm install -g vercel`
-2. Run `vercel` in the project root.
-3. Follow the prompts to deploy.
 
 ---
 Built with ❤️ for Filipino Developers. 🇵🇭💻
