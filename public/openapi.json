@@ -17,7 +17,40 @@
     { "url": "https://pinoy-dev-quotes-api.vercel.app", "description": "Production" },
     { "url": "http://localhost:3000", "description": "Local Development" }
   ],
+  "security": [
+    { "api_key_query": [] },
+    { "bearer_auth": [] }
+  ],
   "paths": {
+    "/api/v1": {
+      "get": {
+        "summary": "API Index & snippets",
+        "description": "Returns basic API information and runnable code examples for various languages.",
+        "tags": ["System"],
+        "responses": {
+          "200": {
+            "description": "API metadata and examples",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "message": { "type": "string" },
+                        "examples": { "type": "object" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/health": {
       "get": {
         "summary": "Health Check",
@@ -210,6 +243,7 @@
         "properties": {
           "id": { "type": "integer" },
           "dialect": { "type": "string" },
+          "language": { "type": "string" },
           "quote": { "type": "string" },
           "english_translation": { "type": "string" },
           "author": { "type": "string" },
@@ -217,6 +251,17 @@
           "date_added": { "type": "string", "format": "date-time" },
           "source": { "type": "string" }
         }
+      }
+    },
+    "securitySchemes": {
+      "api_key_query": {
+        "type": "apiKey",
+        "name": "api_key",
+        "in": "query"
+      },
+      "bearer_auth": {
+        "type": "http",
+        "scheme": "bearer"
       }
     }
   }
