@@ -14,7 +14,7 @@ router.get('/', (req, res) => {
   <item>
     <title>Quote #${q.id} by ${q.author}</title>
     <link>https://pinoy-dev-quotes-api.vercel.app/api/v1/quotes/${q.id}</link>
-    <description><![CDATA[ "${q.quote}" - ${q.english_translation} ]]></description>
+    <description><![CDATA[ [${q.dialect.toUpperCase()} | ${q.language}] "${q.quote}" - ${q.english_translation} ]]></description>
     <pubDate>${new Date(q.date_added).toUTCString()}</pubDate>
     <guid>https://pinoy-dev-quotes-api.vercel.app/api/v1/quotes/${q.id}</guid>
   </item>`).join('')}
