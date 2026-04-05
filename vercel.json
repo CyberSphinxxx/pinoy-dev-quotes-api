@@ -5,7 +5,7 @@
     "api/index.js": {
       "memory": 512,
       "maxDuration": 10,
-      "includeFiles": "data/**"
+      "includeFiles": "../data/**"
     }
   },
   "rewrites": [

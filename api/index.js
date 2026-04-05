@@ -70,10 +70,9 @@ app.use('/api/', limiter);
 app.use(compression());
 app.set('etag', true); // Enable ETags for smart caching
 
-// --- Static Files ---
-const path = require('path');
-app.use(express.static(path.join(__dirname, '../public')));
-app.use('/public', express.static(path.join(__dirname, '../public'))); // Mount under /public too to avoid breaking existing links
+// --- Static Files & Routing ---
+// Vercel serves static files from the 'frontend/dist' directory (via vercel.json outputDirectory).
+// The API only handles /api/* routes.
 
 // Custom middleware to log requests
 app.use((req, res, next) => {
