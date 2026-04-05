@@ -3,7 +3,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const compression = require('compression');
 const rateLimit = require('express-rate-limit');
-const quotes = require('../quotes.json');
+const quotes = require('../data/quotes.json');
 
 // Modular Routers
 const graphqlRouter = require('./graphql');
