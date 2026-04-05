@@ -55,9 +55,9 @@ const endpoints: EndpointGroup[] = [
         <li>Public: <strong>100 req / 15m</strong></li>
         <li>Premium: <strong>1,000 req / 15m</strong></li>
       </ul>
-      <p class="auth-note">Include your key via <code>Authorization: Bearer ...</code></p>
+      <p class="auth-note">Include your key via <code>Authorization: Bearer ...</code> header. Query parameters are discouraged for security.</p>
       <input type="text" id="api-key-input" placeholder="Optional API Key..." />
-      <p class="auth-request">Need a key? <a href="https://github.com/CyberSphinxxx/pinoy-dev-quotes-api/issues" target="_blank">Open an issue</a> to request one.</p>
+      <p class="auth-request">Need a key? <a href="https://github.com/CyberSphinxxx/pinoy-dev-quotes-api/issues/new?title=API+Key+Request&body=Please+provide+your+use+case+and+app+name." target="_blank">Request a free Premium Key</a> to increase your rate limits.</p>
     </div>
   </div>
 
@@ -246,7 +246,6 @@ const endpoints: EndpointGroup[] = [
       const headers: Record<string, string> = {};
       if (apiKey) {
         headers['Authorization'] = `Bearer ${apiKey}`;
-        finalPath += (path.includes('?') ? '&' : '?') + 'api_key=' + apiKey;
       }
 
       terminalUrl.textContent = `${method} ${finalPath}`;
