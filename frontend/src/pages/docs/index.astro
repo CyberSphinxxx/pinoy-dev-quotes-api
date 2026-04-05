@@ -1,4 +1,10 @@
 ---
+/**
+ * OWNS: Documentation Index Page
+ * DO: Provide high-level overview of the API and its capabilities.
+ * DON'T: Replicate the interactive playground logic; link to it.
+ */
+
 import BaseLayout from '../../layouts/BaseLayout.astro';
 ---
 <BaseLayout title="Documentation" description="API Documentation for Pinoy Dev Quotes API.">
@@ -34,53 +40,54 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 
 <style>
   .docs-page {
-    padding: 80px 24px;
+    padding: var(--space-24) var(--space-6);
     max-width: 800px;
   }
   .page-header {
-    margin-bottom: 48px;
+    margin-bottom: var(--space-12);
     text-align: center;
   }
   .page-title {
     font-size: 3rem;
     font-weight: 800;
-    margin-bottom: 16px;
+    margin-bottom: var(--space-4);
+    color: var(--color-text-primary);
   }
   .page-subtitle {
-    font-size: 1.2rem;
-    color: var(--text-secondary);
+    font-size: var(--font-size-lg);
+    color: var(--color-text-secondary);
   }
   .docs-content {
     display: flex;
     flex-direction: column;
-    gap: 40px;
+    gap: var(--space-12);
   }
   .docs-section h2 {
     font-size: 1.5rem;
     font-weight: 700;
-    margin-bottom: 16px;
-    color: var(--brand-400);
+    margin-bottom: var(--space-4);
+    color: var(--color-brand-muted);
   }
   .docs-section p {
-    color: var(--text-secondary);
-    margin-bottom: 16px;
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-4);
   }
   .endpoint-list {
     list-style: none;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: var(--space-3);
   }
   .endpoint-list li code {
-    background: var(--bg-terminal);
+    background: var(--color-bg-terminal);
     padding: 4px 8px;
-    border-radius: 4px;
-    color: var(--brand-400);
+    border-radius: var(--radius-sm);
+    color: var(--color-brand-muted);
   }
   .note {
     background: rgba(14, 165, 233, 0.05);
-    border: 1px solid var(--glass-border);
-    padding: 24px;
-    border-radius: var(--radius);
+    border: 1px solid var(--color-glass-border);
+    padding: var(--space-6);
+    border-radius: var(--radius-md);
   }
 </style>
