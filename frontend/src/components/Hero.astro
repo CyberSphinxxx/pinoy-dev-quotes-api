@@ -1,14 +1,20 @@
 ---
+/**
+ * OWNS: Hero Section Component
+ * DO: Add tagline, main CTA, and key features.
+ * DON'T: Add detailed API documentation here.
+ */
 ---
+
 <header class="hero">
   <div class="container hero-content">
     <h1 class="hero-title">Pinoy Dev <span class="gradient-text">Quotes API</span></h1>
     <p class="subtitle">A free, serverless API serving humor, logic, and "hugot" from Filipino developers — in 7 dialects.</p>
     <div class="badge-row">
-      <span class="badge"><span class="dot" style="background:var(--emerald)"></span> 20 Quotes</span>
-      <span class="badge"><span class="dot" style="background:var(--brand-400)"></span> 7 Dialects</span>
-      <span class="badge"><span class="dot" style="background:var(--accent)"></span> REST + GraphQL</span>
-      <span class="badge"><span class="dot" style="background:var(--amber)"></span> OG Images</span>
+      <span class="badge"><span class="dot" style="background:var(--color-success)"></span> 20 Quotes</span>
+      <span class="badge"><span class="dot" style="background:var(--color-brand-muted)"></span> 7 Dialects</span>
+      <span class="badge"><span class="dot" style="background:var(--color-accent)"></span> REST + GraphQL</span>
+      <span class="badge"><span class="dot" style="background:var(--color-warning)"></span> OG Images</span>
     </div>
     <div class="cta-row">
         <a href="#playground" class="btn btn-primary">Try it now</a>
@@ -27,54 +33,58 @@
     font-size: clamp(2.5rem, 6vw, 4.5rem);
     font-weight: 800;
     letter-spacing: -0.03em;
-    line-height: 1.1;
-    margin-bottom: 24px;
+    line-height: 1.2;
+    margin-bottom: var(--space-6);
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+    word-wrap: break-word;
   }
   .subtitle {
-    font-size: 1.25rem;
-    color: var(--text-secondary);
+    font-size: var(--font-size-lg);
+    color: var(--color-text-secondary);
     max-width: 700px;
-    margin: 0 auto 32px;
+    margin: 0 auto var(--space-8);
   }
   .badge-row {
     display: flex;
     justify-content: center;
-    gap: 12px;
-    margin-top: 24px;
+    gap: var(--space-3);
+    margin-top: var(--space-6);
     flex-wrap: wrap;
   }
   .cta-row {
     display: flex;
     justify-content: center;
-    gap: 16px;
-    margin-top: 48px;
+    gap: var(--space-4);
+    margin-top: var(--space-12);
   }
   .btn {
     display: inline-flex;
     align-items: center;
     padding: 12px 24px;
-    border-radius: 10px;
+    border-radius: var(--radius-sm);
     font-weight: 600;
     text-decoration: none;
-    transition: all 0.2s;
+    transition: all var(--duration-base);
   }
   .btn-primary {
-    background: var(--brand-500);
-    color: white;
+    background: var(--color-brand-primary);
+    color: var(--color-white);
     box-shadow: 0 4px 14px 0 rgba(14, 165, 233, 0.39);
   }
   .btn-primary:hover {
-    background: var(--brand-600);
+    background: var(--color-brand-hover);
     transform: translateY(-1px);
     box-shadow: 0 6px 20px rgba(14, 165, 233, 0.23);
   }
   .btn-secondary {
-    background: var(--glass-bg);
-    color: var(--text-primary);
-    border: 1px solid var(--glass-border);
+    background: var(--color-glass-bg);
+    color: var(--color-text-primary);
+    border: 1px solid var(--color-glass-border);
   }
   .btn-secondary:hover {
-    border-color: var(--brand-400);
+    border-color: var(--color-brand-muted);
     background: rgba(14, 165, 233, 0.05);
   }
 </style>
