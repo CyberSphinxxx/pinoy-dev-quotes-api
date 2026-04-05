@@ -139,7 +139,6 @@ v1.get('/', (req, res) => {
     auth: {
       type: "Optional API Key",
       header: "Authorization: Bearer <your_key>",
-      query_param: "?api_key=<your_key>",
       benefits: "Increases rate limit from 100 to 1000 requests per 15 minutes."
     }
   });
@@ -169,8 +168,8 @@ v1.get('/qotd', (req, res) => {
   for(let i=0; i<today.length; i++) seed += today.charCodeAt(i);
   const qotdIndex = seed % quotes.length;
   
-  // QOTD: Cache for 1 hour but allow re-generation of metadata timestamp with no-cache, s-maxage=0
-  respondWithMeta(res, quotes[qotdIndex], { type: 'qotd', date: today }, 200, 'no-cache, s-maxage=0');
+  // QOTD: Fresh response every time to ensure live metadata timestamp
+  respondWithMeta(res, quotes[qotdIndex], { type: 'qotd', date: today }, 200, 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0, s-maxage=0');
 });
 
 // Random Quote
@@ -187,14 +186,14 @@ v1.get('/random', (req, res) => {
 
   if (maxSafeCount === 1) {
     const randomIndex = Math.floor(Math.random() * pool.length);
-    return respondWithMeta(res, pool[randomIndex], { is_random: true, tag }, 200, 'no-store, no-cache, must-revalidate');
+    return respondWithMeta(res, pool[randomIndex], { is_random: true, tag }, 200, 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0, s-maxage=0');
   }
 
   // Shuffle array and take N
   const shuffled = [...pool].sort(() => 0.5 - Math.random());
   const selected = shuffled.slice(0, maxSafeCount);
   
-  respondWithMeta(res, selected, { count: selected.length, is_random: true, tag }, 200, 'no-store, no-cache, must-revalidate');
+  respondWithMeta(res, selected, { count: selected.length, is_random: true, tag }, 200, 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0, s-maxage=0');
 });
 
 // Search
