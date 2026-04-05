@@ -9,9 +9,32 @@ const quotes = require('../quotes.json');
 const graphqlRouter = require('./graphql');
 const ogRouter = require('./og');
 const feedRouter = require('./feed');
+const snippets = require('./snippets');
 
 const app = express();
+app.use(express.json());
 const PORT = process.env.PORT || 3000;
+
+// API Keys Configuration
+const premiumKeys = (process.env.API_KEYS || '').split(',').filter(k => k.trim());
+
+// API Key Middleware
+const apiKeyMiddleware = (req, res, next) => {
+  const authHeader = req.get('Authorization');
+  const queryKey = req.query.api_key;
+  let key = '';
+
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    key = authHeader.split(' ')[1];
+  } else if (queryKey) {
+    key = queryKey;
+  }
+
+  req.isPremium = key && premiumKeys.includes(key);
+  next();
+};
+
+app.use(apiKeyMiddleware);
 
 // --- Security Middleware ---
 app.use(helmet({
@@ -31,9 +54,11 @@ app.use(cors());
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 100,
+  max: (req, res) => {
+    return req.isPremium ? 1000 : 100;
+  },
   message: {
-    error: "Too many requests, please try again later.",
+    error: "Too many requests. Please try again later or use an API key for higher limits.",
     retry_after: "15 minutes"
   },
   standardHeaders: true,
@@ -52,10 +77,8 @@ app.use('/public', express.static(path.join(__dirname, '../public'))); // Mount 
 
 // Custom middleware to log requests
 app.use((req, res, next) => {
-  if (process.env.NODE_ENV !== 'production') {
-    const time = new Date().toISOString();
-    console.log(`[${time}] ${req.method} ${req.originalUrl}`);
-  }
+  const time = new Date().toISOString();
+  console.log(`[${time}] ${req.method} ${req.originalUrl} - ${req.isPremium ? 'PREMIUM' : 'PUBLIC'}`);
   next();
 });
 
@@ -75,15 +98,15 @@ const respondWithMeta = (res, data, meta = {}, statusCode = 200, cacheConfig = n
   if (res.req.query.format === 'text' && isQuoteData(data)) {
     res.set('Content-Type', 'text/plain');
     if (Array.isArray(data)) {
-        return res.status(statusCode).send(data.map(q => `"${q.quote}" - ${q.author}`).join('\n'));
+        return res.status(statusCode).send(data.map(q => `"${q.quote}" - ${q.author} (${q.dialect} | ${q.language})`).join('\n'));
     }
-    return res.status(statusCode).send(`"${data.quote}" - ${data.author}`);
+    return res.status(statusCode).send(`"${data.quote}" - ${data.author} (${data.dialect} | ${data.language})`);
   } else if (res.req.query.format === 'markdown' && isQuoteData(data)) {
     res.set('Content-Type', 'text/markdown');
     if (Array.isArray(data)) {
-        return res.status(statusCode).send(data.map(q => `> ${q.quote}\n> _- ${q.author}_`).join('\n\n'));
+        return res.status(statusCode).send(data.map(q => `> ${q.quote}\n> _- ${q.author} (${q.dialect} | ${q.language})_`).join('\n\n'));
     }
-    return res.status(statusCode).send(`> ${data.quote}\n> _- ${data.author}_`);
+    return res.status(statusCode).send(`> ${data.quote}\n> _- ${data.author} (${data.dialect} | ${data.language})_`);
   }
 
   res.status(statusCode).json({
@@ -98,6 +121,30 @@ const respondWithMeta = (res, data, meta = {}, statusCode = 200, cacheConfig = n
 
 // --- API v1 Endpoints ---
 const v1 = express.Router();
+
+// Root endpoint with snippets
+v1.get('/', (req, res) => {
+  respondWithMeta(res, {
+    message: "Welcome to Pinoy Dev Quotes API v1",
+    documentation: "https://pinoy-dev-quotes-api.vercel.app",
+    endpoints: {
+      stats: "/v1/stats",
+      dialects: "/v1/dialects",
+      random: "/v1/random",
+      search: "/v1/search?q={query}",
+      qotd: "/v1/qotd",
+      graphql: "/v1/graphql",
+      rss: "/v1/feed.xml"
+    },
+    examples: snippets,
+    auth: {
+      type: "Optional API Key",
+      header: "Authorization: Bearer <your_key>",
+      query_param: "?api_key=<your_key>",
+      benefits: "Increases rate limit from 100 to 1000 requests per 15 minutes."
+    }
+  });
+});
 
 // Stats
 v1.get('/stats', (req, res) => {
