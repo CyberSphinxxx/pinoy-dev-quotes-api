@@ -3,7 +3,7 @@
   "info": {
     "title": "Pinoy Dev Quotes API",
     "description": "A free, serverless API for Filipino programmer quotes, featuring Bisaya, Tagalog, Ilocano, Kapampangan, Waray, Hiligaynon, and Bikolano humor, hugot, and dev wisdom.",
-    "version": "1.3.0",
+    "version": "1.3.1",
     "contact": {
       "name": "John Lemar Gonzales",
       "url": "https://github.com/CyberSphinxxx/pinoy-dev-quotes-api"
@@ -29,6 +29,11 @@
         "responses": {
           "200": {
             "description": "API metadata and examples",
+            "headers": {
+              "X-RateLimit-Limit": { "schema": { "type": "integer" } },
+              "X-RateLimit-Remaining": { "schema": { "type": "integer" } },
+              "X-RateLimit-Reset": { "schema": { "type": "integer" } }
+            },
             "content": {
               "application/json": {
                 "schema": {
@@ -126,7 +131,9 @@
               "X-RateLimit-Reset": { "schema": { "type": "integer" } }
             },
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/QuoteResponse" } }
+              "application/json": { "schema": { "$ref": "#/components/schemas/QuoteResponse" } },
+              "text/plain": { "schema": { "type": "string" } },
+              "text/markdown": { "schema": { "type": "string" } }
             }
           }
         }
@@ -140,7 +147,7 @@
           { "name": "page", "in": "query", "schema": { "type": "integer", "default": 1 } },
           { "name": "limit", "in": "query", "description": "Quotes per page (max 100)", "schema": { "type": "integer", "default": 10, "maximum": 100 } },
           { "name": "tag", "in": "query", "description": "Filter by tag (e.g. hugot, debugging)", "schema": { "type": "string" } },
-          { "name": "format", "in": "query", "schema": { "type": "string", "enum": ["json", "text", "markdown"] } }
+          { "name": "format", "in": "query", "description": "Response format", "schema": { "type": "string", "enum": ["json", "text", "markdown"] } }
         ],
         "responses": {
           "200": {
@@ -169,8 +176,15 @@
         "responses": {
           "200": {
             "description": "The requested quote",
+            "headers": {
+              "X-RateLimit-Limit": { "schema": { "type": "integer" } },
+              "X-RateLimit-Remaining": { "schema": { "type": "integer" } },
+              "X-RateLimit-Reset": { "schema": { "type": "integer" } }
+            },
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/QuoteResponse" } }
+              "application/json": { "schema": { "$ref": "#/components/schemas/QuoteResponse" } },
+              "text/plain": { "schema": { "type": "string" } },
+              "text/markdown": { "schema": { "type": "string" } }
             }
           },
           "404": { "description": "Quote not found" }
@@ -204,6 +218,11 @@
         "responses": {
           "200": {
             "description": "Array of matching quotes",
+            "headers": {
+              "X-RateLimit-Limit": { "schema": { "type": "integer" } },
+              "X-RateLimit-Remaining": { "schema": { "type": "integer" } },
+              "X-RateLimit-Reset": { "schema": { "type": "integer" } }
+            },
             "content": {
               "application/json": { "schema": { "$ref": "#/components/schemas/QuotesResponse" } },
               "text/plain": { "schema": { "type": "string" } },
@@ -221,6 +240,11 @@
         "responses": {
           "200": {
             "description": "Total quotes, dialect counts, and dialect list",
+            "headers": {
+              "X-RateLimit-Limit": { "schema": { "type": "integer" } },
+              "X-RateLimit-Remaining": { "schema": { "type": "integer" } },
+              "X-RateLimit-Reset": { "schema": { "type": "integer" } }
+            },
             "content": {
               "application/json": {
                 "schema": {
@@ -254,6 +278,11 @@
         "responses": {
           "200": {
             "description": "Array of unique dialect strings",
+            "headers": {
+              "X-RateLimit-Limit": { "schema": { "type": "integer" } },
+              "X-RateLimit-Remaining": { "schema": { "type": "integer" } },
+              "X-RateLimit-Reset": { "schema": { "type": "integer" } }
+            },
             "content": {
               "application/json": {
                 "schema": {
@@ -283,8 +312,15 @@
         "responses": {
           "200": {
             "description": "Array of quotes for that dialect",
+            "headers": {
+              "X-RateLimit-Limit": { "schema": { "type": "integer" } },
+              "X-RateLimit-Remaining": { "schema": { "type": "integer" } },
+              "X-RateLimit-Reset": { "schema": { "type": "integer" } }
+            },
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/QuotesResponse" } }
+              "application/json": { "schema": { "$ref": "#/components/schemas/QuotesResponse" } },
+              "text/plain": { "schema": { "type": "string" } },
+              "text/markdown": { "schema": { "type": "string" } }
             }
           },
           "404": { "description": "No quotes found for dialect" }
@@ -301,8 +337,15 @@
         "responses": {
           "200": {
             "description": "A single random quote from the specified dialect",
+            "headers": {
+              "X-RateLimit-Limit": { "schema": { "type": "integer" } },
+              "X-RateLimit-Remaining": { "schema": { "type": "integer" } },
+              "X-RateLimit-Reset": { "schema": { "type": "integer" } }
+            },
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/QuoteResponse" } }
+              "application/json": { "schema": { "$ref": "#/components/schemas/QuoteResponse" } },
+              "text/plain": { "schema": { "type": "string" } },
+              "text/markdown": { "schema": { "type": "string" } }
             }
           },
           "404": { "description": "No quotes found for dialect" }
@@ -316,25 +359,15 @@
         "tags": ["Tools"],
         "responses": {
           "200": {
-            "description": "HTML snippet and usage instructions",
+            "headers": {
+              "X-RateLimit-Limit": { "schema": { "type": "integer" } },
+              "X-RateLimit-Remaining": { "schema": { "type": "integer" } },
+              "X-RateLimit-Reset": { "schema": { "type": "integer" } }
+            },
             "content": {
               "application/json": {
                 "schema": {
-                  "allOf": [
-                    { "$ref": "#/components/schemas/ResponseEnvelope" },
-                    {
-                      "type": "object",
-                      "properties": {
-                        "data": {
-                          "type": "object",
-                          "properties": {
-                            "snippet": { "type": "string" },
-                            "usage": { "type": "string" }
-                          }
-                        }
-                      }
-                    }
-                  ]
+                  "$ref": "#/components/schemas/EmbedResponse"
                 }
               }
             }
@@ -462,6 +495,23 @@
             "type": "object",
             "properties": {
               "data": { "type": "array", "items": { "$ref": "#/components/schemas/Quote" } }
+            }
+          }
+        ]
+      },
+      "EmbedResponse": {
+        "allOf": [
+          { "$ref": "#/components/schemas/ResponseEnvelope" },
+          {
+            "type": "object",
+            "properties": {
+              "data": {
+                "type": "object",
+                "properties": {
+                  "snippet": { "type": "string", "example": "<!-- Pinoy Dev Quotes Widget -->..." },
+                  "usage": { "type": "string", "example": "Paste this HTML into any webpage..." }
+                }
+              }
             }
           }
         ]
