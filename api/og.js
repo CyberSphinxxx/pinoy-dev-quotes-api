@@ -3,14 +3,14 @@ const { default: satori } = require('satori');
 const { Resvg } = require('@resvg/resvg-js');
 const fs = require('fs');
 const path = require('path');
-const quotes = require('../quotes.json');
+const quotes = require('../data/quotes.json');
 
 const router = express.Router();
 
 let fontData = null;
 try {
-  // Primary: woff file from public/fonts (satori supports .ttf, .otf, .woff but NOT .woff2)
-  const fontPath = path.resolve(__dirname, '../public/fonts/Inter-Bold.woff');
+  // Primary: woff file (satori supports .ttf, .otf, .woff but NOT .woff2)
+  const fontPath = path.resolve(__dirname, '../data/fonts/Inter-Bold.woff');
   fontData = fs.readFileSync(fontPath);
 } catch (error) {
   try {
