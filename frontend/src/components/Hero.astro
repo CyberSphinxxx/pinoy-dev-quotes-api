@@ -1,0 +1,80 @@
+---
+---
+<header class="hero">
+  <div class="container hero-content">
+    <h1 class="hero-title">Pinoy Dev <span class="gradient-text">Quotes API</span></h1>
+    <p class="subtitle">A free, serverless API serving humor, logic, and "hugot" from Filipino developers — in 7 dialects.</p>
+    <div class="badge-row">
+      <span class="badge"><span class="dot" style="background:var(--emerald)"></span> 20 Quotes</span>
+      <span class="badge"><span class="dot" style="background:var(--brand-400)"></span> 7 Dialects</span>
+      <span class="badge"><span class="dot" style="background:var(--accent)"></span> REST + GraphQL</span>
+      <span class="badge"><span class="dot" style="background:var(--amber)"></span> OG Images</span>
+    </div>
+    <div class="cta-row">
+        <a href="#playground" class="btn btn-primary">Try it now</a>
+        <a href="https://github.com/CyberSphinxxx/pinoy-dev-quotes-api" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">View on GitHub</a>
+    </div>
+  </div>
+</header>
+
+<style>
+  .hero {
+    text-align: center;
+    padding: 100px 0 64px;
+    background: radial-gradient(circle at top center, rgba(14, 165, 233, 0.05) 0%, transparent 70%);
+  }
+  .hero-title {
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    margin-bottom: 24px;
+  }
+  .subtitle {
+    font-size: 1.25rem;
+    color: var(--text-secondary);
+    max-width: 700px;
+    margin: 0 auto 32px;
+  }
+  .badge-row {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 24px;
+    flex-wrap: wrap;
+  }
+  .cta-row {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 48px;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .btn-primary {
+    background: var(--brand-500);
+    color: white;
+    box-shadow: 0 4px 14px 0 rgba(14, 165, 233, 0.39);
+  }
+  .btn-primary:hover {
+    background: var(--brand-600);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(14, 165, 233, 0.23);
+  }
+  .btn-secondary {
+    background: var(--glass-bg);
+    color: var(--text-primary);
+    border: 1px solid var(--glass-border);
+  }
+  .btn-secondary:hover {
+    border-color: var(--brand-400);
+    background: rgba(14, 165, 233, 0.05);
+  }
+</style>

@@ -1,0 +1,82 @@
+---
+export interface Props {
+  lang: string;
+  code: string;
+}
+
+const { lang, code } = Astro.props;
+---
+<div class="snippet-card">
+  <div class="snippet-card-header">
+    <span class="snippet-lang">{lang}</span>
+    <button class="snippet-copy" data-code={code}>Copy</button>
+  </div>
+  <pre><code>{code}</code></pre>
+</div>
+
+<style>
+  .snippet-card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .snippet-card-header {
+    padding: 12px 16px;
+    background: rgba(15, 23, 42, 0.6);
+    border-bottom: 1px solid var(--glass-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .snippet-lang {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--brand-400);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .snippet-copy {
+    background: none;
+    border: 1px solid var(--glass-border);
+    color: var(--text-muted);
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s;
+  }
+  .snippet-copy:hover {
+    border-color: var(--brand-400);
+    color: var(--brand-400);
+  }
+  .snippet-card pre {
+    padding: 16px;
+    margin: 0;
+    font-family: 'Fira Code', monospace;
+    font-size: 12px;
+    line-height: 1.7;
+    color: var(--text-secondary);
+    overflow-x: auto;
+  }
+
+  /* Handle dynamic copy label via JS in the parent or a global script */
+</style>
+
+<script>
+  const buttons = document.querySelectorAll('.snippet-copy');
+  buttons.forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const code = btn.getAttribute('data-code');
+      if (code) {
+        await navigator.clipboard.writeText(code);
+        const originalText = btn.textContent;
+        btn.textContent = 'Copied!';
+        setTimeout(() => {
+          btn.textContent = originalText;
+        }, 2000);
+      }
+    });
+  });
+</script>

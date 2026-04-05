@@ -1,0 +1,86 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+<BaseLayout title="Documentation" description="API Documentation for Pinoy Dev Quotes API.">
+  <div class="container docs-page">
+    <header class="page-header">
+      <h1 class="page-title">Documentation</h1>
+      <p class="page-subtitle">Understand how to use the Pinoy Dev Quotes API effectively in your applications.</p>
+    </header>
+
+    <div class="docs-content">
+      <section class="docs-section">
+        <h2>Introduction</h2>
+        <p>The Pinoy Dev Quotes API serves a collection of humorous and relatable quotes for Filipino developers. Our API supports 7 dialects, including Tagalog, Bisaya, and more. Use it to add a touch of personality to your developer tools or just for fun.</p>
+      </section>
+
+      <section class="docs-section">
+        <h2>Endpoints</h2>
+        <p>Explore all available endpoints directly on our <a href="/">Home page interactive playground</a>. Each endpoint supports various query parameters for customization.</p>
+        <ul class="endpoint-list">
+          <li><code>/api/v1/random</code> — Fetches a single random quote.</li>
+          <li><code>/api/v1/qotd</code> — Fetches the official Quote of the Day.</li>
+          <li><code>/api/v1/search?q=&#123;query&#125;</code> — Searches for quotes based on keywords.</li>
+          <li><code>/api/v1/dialect/&#123;dialect&#125;/random</code> — Fetches a random quote from a specific dialect.</li>
+        </ul>
+      </section>
+
+      <section class="docs-section note">
+        <p><strong>Full per-endpoint documentation coming soon!</strong> We're currently refactoring our docs to provide more detailed examples for each use case.</p>
+      </section>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .docs-page {
+    padding: 80px 24px;
+    max-width: 800px;
+  }
+  .page-header {
+    margin-bottom: 48px;
+    text-align: center;
+  }
+  .page-title {
+    font-size: 3rem;
+    font-weight: 800;
+    margin-bottom: 16px;
+  }
+  .page-subtitle {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+  }
+  .docs-content {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+  .docs-section h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+    color: var(--brand-400);
+  }
+  .docs-section p {
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+  }
+  .endpoint-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .endpoint-list li code {
+    background: var(--bg-terminal);
+    padding: 4px 8px;
+    border-radius: 4px;
+    color: var(--brand-400);
+  }
+  .note {
+    background: rgba(14, 165, 233, 0.05);
+    border: 1px solid var(--glass-border);
+    padding: 24px;
+    border-radius: var(--radius);
+  }
+</style>

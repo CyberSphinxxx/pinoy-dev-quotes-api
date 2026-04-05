@@ -1,0 +1,78 @@
+---
+---
+<nav class="navbar">
+  <div class="container nav-content">
+    <div class="brand">
+      <a href="/">
+        <span class="emoji">🇵🇭</span>
+        <span class="brand-text">Pinoy <span class="gradient-text">Dev Quotes</span></span>
+      </a>
+    </div>
+    <ul class="nav-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="/docs">Docs</a></li>
+      <li><a href="/changelog">Changelog</a></li>
+      <li><a href="https://github.com/CyberSphinxxx/pinoy-dev-quotes-api" target="_blank" rel="noopener noreferrer" class="github-link">GitHub</a></li>
+    </ul>
+  </div>
+</nav>
+
+<style>
+  .navbar {
+    padding: 20px 0;
+    border-bottom: 1px solid var(--glass-border);
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(8px);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .nav-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .brand a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: var(--text-primary);
+  }
+  .emoji {
+    font-size: 1.5rem;
+  }
+  .nav-links {
+    display: flex;
+    gap: 32px;
+    list-style: none;
+    align-items: center;
+  }
+  .nav-links a {
+    text-decoration: none;
+    color: var(--text-secondary);
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover {
+    color: var(--brand-400);
+  }
+  .github-link {
+    background: var(--glass-bg);
+    padding: 6px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--glass-border);
+  }
+  .github-link:hover {
+    border-color: var(--brand-400);
+  }
+
+  @media (max-width: 640px) {
+    .nav-links {
+      gap: 16px;
+    }
+  }
+</style>

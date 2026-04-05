@@ -1,0 +1,59 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import QuoteDemo from '../components/QuoteDemo.astro';
+import CodeSnippet from '../components/CodeSnippet.astro';
+
+const snippets = [
+  { lang: 'cURL', code: `# Random quote\ncurl https://pinoy-dev-quotes-api.vercel.app/api/v1/random\n\n# Search\ncurl "https://pinoy-dev-quotes-api.vercel.app/api/v1/search?q=bug"\n\n# Plain text\ncurl "https://pinoy-dev-quotes-api.vercel.app/api/v1/random?format=text"` },
+  { lang: 'JavaScript', code: `// Fetch a random quote\nconst res = await fetch(\n  'https://pinoy-dev-quotes-api.vercel.app/api/v1/random'\n);\nconst { data } = await res.json();\nconsole.log(\`"\${data.quote}" — \${data.author}\`);` },
+  { lang: 'Python', code: `import requests\n\nr = requests.get(\n    "https://pinoy-dev-quotes-api.vercel.app/api/v1/random"\n)\nquote = r.json()["data"]\nprint(f'"{quote["quote"]}" — {quote["author"]}')` },
+  { lang: 'PHP', code: `$json = file_get_contents(\n    "https://pinoy-dev-quotes-api.vercel.app/api/v1/random"\n);\n$quote = json_decode($json, true)["data"];\necho "\\"{$quote['quote']}\\" — {$quote['author']}";` },
+  { lang: 'GraphQL', code: `// POST to /api/v1/graphql\n{\n  quotes(dialect: "bisaya", limit: 3) {\n    id\n    quote\n    language\n    english_translation\n    author\n    tags\n  }\n}` },
+  { lang: 'HTTPie', code: `# Random quote\nhttp GET pinoy-dev-quotes-api.vercel.app/api/v1/random\n\n# Quote of the day\nhttp GET pinoy-dev-quotes-api.vercel.app/api/v1/qotd\n\n# Search for hugot\nhttp GET "pinoy-dev-quotes-api.vercel.app/api/v1/search?q=hugot"` }
+];
+---
+<BaseLayout title="Home">
+  <Hero />
+
+  <div class="container">
+    <QuoteDemo />
+
+    <section class="quick-start">
+      <h2 class="section-title">Quick Start <span class="gradient-text">Snippets</span></h2>
+      <p class="section-subtitle">Copy-paste into your project and start using the API instantly.</p>
+      <div class="snippet-grid">
+        {snippets.map(snip => (
+          <CodeSnippet lang={snip.lang} code={snip.code} />
+        ))}
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .quick-start {
+    margin-top: 100px;
+    padding-bottom: 80px;
+  }
+  .section-title {
+    font-size: 2.25rem;
+    font-weight: 800;
+    margin-bottom: 8px;
+    text-align: center;
+  }
+  .section-subtitle {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    margin-bottom: 48px;
+  }
+  .snippet-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+    gap: 24px;
+  }
+  @media (max-width: 640px) {
+    .snippet-grid { grid-template-columns: 1fr; }
+  }
+</style>

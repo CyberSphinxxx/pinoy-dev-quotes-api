@@ -1,0 +1,74 @@
+---
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+
+export interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = "A free, serverless API for Filipino developer quotes." } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <title>{title} | Pinoy Dev Quotes API</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <Navbar />
+    <main>
+      <slot />
+    </main>
+    <Footer />
+
+    <style is:global>
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      :root {
+        --bg-primary: #0f172a; --bg-secondary: #1e293b; --bg-terminal: #0D1117;
+        --text-primary: #f8fafc; --text-secondary: #94a3b8; --text-muted: #64748b;
+        --brand-400: #38bdf8; --brand-500: #0ea5e9; --brand-600: #0284c7;
+        --accent: #818cf8; --emerald: #34d399; --amber: #fbbf24; --rose: #fb7185;
+        --glass-bg: rgba(30,41,59,0.7); --glass-border: rgba(255,255,255,0.08);
+        --radius: 12px; --radius-lg: 16px;
+      }
+      html {
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        font-family: 'Inter', system-ui, sans-serif;
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+      }
+      body {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+      main {
+        flex: 1;
+      }
+      ::selection { background: var(--brand-500); color: white; }
+
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar { width: 8px; height: 8px; }
+      ::-webkit-scrollbar-track { background: transparent; }
+      ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; border: 2px solid var(--bg-primary); }
+      ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+      * { scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.1) transparent; }
+
+      .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+      .gradient-text { background: linear-gradient(135deg, var(--brand-400), var(--accent)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+
+      /* Shared styles across components */
+      .badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 999px; font-size: 12px; font-weight: 600; background: var(--glass-bg); border: 1px solid var(--glass-border); color: var(--text-secondary); }
+      .badge .dot { width: 8px; height: 8px; border-radius: 50%; }
+
+      .section-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); padding: 16px 0 4px; }
+    </style>
+  </body>
+</html>
