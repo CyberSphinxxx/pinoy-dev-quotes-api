@@ -71,9 +71,23 @@ router.get('/:id/image', async (req, res) => {
                 display: 'flex',
                 fontSize: 32,
                 color: '#94a3b8', // Slate 400
-                marginBottom: '40px',
+                marginBottom: '20px',
               },
               children: quoteObj.english_translation
+            }
+          },
+          {
+            type: 'div',
+            props: {
+              style: {
+                display: 'flex',
+                fontSize: 24,
+                color: '#38bdf8', // Sky 400
+                marginBottom: '40px',
+                fontWeight: 600,
+                letterSpacing: '0.05em'
+              },
+              children: `🇵🇭 ${quoteObj.dialect.toUpperCase()} | ${quoteObj.language}`
             }
           },
           {
