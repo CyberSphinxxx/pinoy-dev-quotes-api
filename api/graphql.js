@@ -1,7 +1,7 @@
 const express = require('express');
 const { createHandler } = require('graphql-http/lib/use/express');
 const { GraphQLSchema, GraphQLObjectType, GraphQLString, GraphQLInt, GraphQLList, GraphQLNonNull } = require('graphql');
-const quotes = require('../quotes.json');
+const quotes = require('../data/quotes.json');
 
 const QuoteType = new GraphQLObjectType({
   name: 'Quote',
