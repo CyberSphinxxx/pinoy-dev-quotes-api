@@ -2,6 +2,7 @@
   "buildCommand": "cd frontend && npm run build",
   "installCommand": "npm install && cd frontend && npm install",
   "outputDirectory": "frontend/dist",
+  "cleanUrls": true,
   "functions": {
     "api/index.js": {
       "memory": 512,
@@ -9,8 +10,26 @@
       "includeFiles": "../data/**"
     }
   },
+  "headers": [
+    {
+      "source": "/api/v1/random",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-store, no-cache, must-revalidate, max-age=0, s-maxage=0" }
+      ]
+    },
+    {
+      "source": "/api/v1/qotd",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-store, no-cache, must-revalidate, max-age=0, s-maxage=0" }
+      ]
+    }
+  ],
+  "redirects": [
+    { "source": "/public/openapi.json", "destination": "/openapi.json", "permanent": true }
+  ],
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/index.js" },
     { "source": "/(.*)", "destination": "/$1" }
   ]
 }
+
