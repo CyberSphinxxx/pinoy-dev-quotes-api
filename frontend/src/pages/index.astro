@@ -1,14 +1,23 @@
 ---
+/**
+ * OWNS: Landing Page
+ * DO: Coordinate main sections (Hero, QuoteDemo, QuickStart).
+ * DON'T: Add heavy business logic here.
+ */
+
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
 import QuoteDemo from '../components/QuoteDemo.astro';
 import CodeSnippet from '../components/CodeSnippet.astro';
+import { API_CONFIG } from '../lib/constants';
+
+const baseUrl = "https://pinoy-dev-quotes-api.vercel.app";
 
 const snippets = [
-  { lang: 'cURL', code: `# Random quote\ncurl https://pinoy-dev-quotes-api.vercel.app/api/v1/random\n\n# Search\ncurl "https://pinoy-dev-quotes-api.vercel.app/api/v1/search?q=bug"\n\n# Plain text\ncurl "https://pinoy-dev-quotes-api.vercel.app/api/v1/random?format=text"` },
-  { lang: 'JavaScript', code: `// Fetch a random quote\nconst res = await fetch(\n  'https://pinoy-dev-quotes-api.vercel.app/api/v1/random'\n);\nconst { data } = await res.json();\n// Handle both single object and array responses\nconst quote = Array.isArray(data) ? data[0] : data;\nconsole.log(\`"\${quote.quote}" — \${quote.author}\`);` },
-  { lang: 'Python', code: `import requests\n\nr = requests.get(\n    "https://pinoy-dev-quotes-api.vercel.app/api/v1/random"\n)\ndata = r.json()["data"]\n# Handle both single object and array responses\nquote = data[0] if isinstance(data, list) else data\nprint(f'"{quote["quote"]}" — {quote["author"]}')` },
-  { lang: 'PHP', code: `$json = file_get_contents(\n    "https://pinoy-dev-quotes-api.vercel.app/api/v1/random"\n);\n$data = json_decode($json, true)["data"];\n// Handle both single object and array responses\n$quote = is_array($data) && isset($data[0]) ? $data[0] : $data;\necho "\\"{$quote['quote']}\\" — {$quote['author']}";` },
+  { lang: 'cURL', code: `# Random quote\ncurl ${baseUrl}/api/v1/random\n\n# Search\ncurl "${baseUrl}/api/v1/search?q=bug"\n\n# Plain text\ncurl "${baseUrl}/api/v1/random?format=text"` },
+  { lang: 'JavaScript', code: `// Fetch a random quote\nconst res = await fetch(\n  '${baseUrl}/api/v1/random'\n);\nconst { data } = await res.json();\n// Handle both single object and array responses\nconst quote = Array.isArray(data) ? data[0] : data;\nconsole.log(\`"\${quote.quote}" — \${quote.author}\`);` },
+  { lang: 'Python', code: `import requests\n\nr = requests.get(\n    "${baseUrl}/api/v1/random"\n)\ndata = r.json()["data"]\n# Handle both single object and array responses\nquote = data[0] if isinstance(data, list) else data\nprint(f'"{quote["quote"]}" — {quote["author"]}')` },
+  { lang: 'PHP', code: `$json = file_get_contents(\n    "${baseUrl}/api/v1/random"\n);\n$data = json_decode($json, true)["data"];\n// Handle both single object and array responses\n$quote = is_array($data) && isset($data[0]) ? $data[0] : $data;\necho "\\"{$quote['quote']}\\" — {$quote['author']}";` },
   { lang: 'GraphQL', code: `// POST to /api/v1/graphql\n{\n  quotes(dialect: "bisaya", limit: 3) {\n    id\n    quote\n    language\n    english_translation\n    author\n    tags\n  }\n}` },
   { lang: 'HTTPie', code: `# Random quote\nhttp GET pinoy-dev-quotes-api.vercel.app/api/v1/random\n\n# Quote of the day\nhttp GET pinoy-dev-quotes-api.vercel.app/api/v1/qotd\n\n# Search for hugot\nhttp GET "pinoy-dev-quotes-api.vercel.app/api/v1/search?q=hugot"` }
 ];
@@ -39,19 +48,20 @@ const snippets = [
   .section-title {
     font-size: 2.25rem;
     font-weight: 800;
-    margin-bottom: 8px;
+    margin-bottom: var(--space-2);
     text-align: center;
+    color: var(--color-text-primary);
   }
   .section-subtitle {
     text-align: center;
-    color: var(--text-muted);
-    font-size: 1.1rem;
-    margin-bottom: 48px;
+    color: var(--color-text-muted);
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--space-12);
   }
   .snippet-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
-    gap: 24px;
+    gap: var(--space-6);
   }
   @media (max-width: 640px) {
     .snippet-grid { grid-template-columns: 1fr; }
