@@ -105,6 +105,7 @@
       <!-- Sidebar -->
       <div class="sidebar">
         <div class="section-label">Core</div>
+        <button class="endpoint-btn" onclick="hit('/api/v1')"><span class="method-badge method-get">GET</span><div><div class="endpoint-path">/api/v1</div><div class="endpoint-desc">API Index & Snippets</div></div></button>
         <button class="endpoint-btn" onclick="hit('/api/v1/random')"><span class="method-badge method-get">GET</span><div><div class="endpoint-path">/api/v1/random</div><div class="endpoint-desc">Random quote (add ?count=3 for multiple)</div></div></button>
         <button class="endpoint-btn" onclick="hit('/api/v1/qotd')"><span class="method-badge method-get">GET</span><div><div class="endpoint-path">/api/v1/qotd</div><div class="endpoint-desc">Quote of the Day</div></div></button>
         <button class="endpoint-btn" onclick="hit('/api/v1/quotes?page=1&limit=5')"><span class="method-badge method-get">GET</span><div><div class="endpoint-path">/api/v1/quotes?page=1&limit=5</div><div class="endpoint-desc">Paginated list</div></div></button>
@@ -123,6 +124,19 @@
         <button class="endpoint-btn" onclick="hitImage('/api/v1/quotes/1/image')"><span class="method-badge method-get">GET</span><div><div class="endpoint-path">/api/v1/quotes/1/image</div><div class="endpoint-desc">Generate OG card (PNG)</div></div></button>
         <button class="endpoint-btn" onclick="hit('/api/v1/feed.xml', true)"><span class="method-badge method-get">GET</span><div><div class="endpoint-path">/api/v1/feed.xml</div><div class="endpoint-desc">RSS feed</div></div></button>
         <button class="endpoint-btn" onclick="hit('/api/health')"><span class="method-badge method-get">GET</span><div><div class="endpoint-path">/api/health</div><div class="endpoint-desc">Health check</div></div></button>
+
+        <div class="section-label">Authentication</div>
+        <div style="padding: 12px; background: rgba(251, 191, 36, 0.05); border: 1px solid rgba(251, 191, 36, 0.2); border-radius: var(--radius); font-size: 11px; color: var(--text-secondary);">
+          <p style="margin-bottom: 8px;"><strong style="color: var(--amber);">Tiered Rate Limits</strong></p>
+          <ul style="list-style: none; display: flex; flex-direction: column; gap: 4px;">
+            <li>Public: <strong>100 req / 15m</strong></li>
+            <li>Premium: <strong>1,000 req / 15m</strong></li>
+          </ul>
+          <p style="margin-top: 8px;">Include your key via <code>?api_key=...</code> or <code>Authorization: Bearer ...</code></p>
+        </div>
+        <div style="margin-top: 8px;">
+          <input type="text" id="api-key-input" placeholder="Optional API Key..." style="width: 100%; background: var(--bg-terminal); border: 1px solid var(--glass-border); padding: 8px 12px; border-radius: 8px; font-size: 11px; color: var(--brand-400); font-family: 'Fira Code', monospace; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='var(--brand-400)'" onblur="this.style.borderColor='var(--glass-border)'">
+        </div>
       </div>
 
       <!-- Terminal -->
@@ -193,6 +207,7 @@ echo "\"{$quote['quote']}\" — {$quote['author']}";</pre>
   quotes(dialect: "bisaya", limit: 3) {
     id
     quote
+    language
     english_translation
     author
     tags
@@ -245,9 +260,20 @@ http GET "pinoy-dev-quotes-api.vercel.app/api/v1/search?q=hugot"</pre>
       const rv = document.getElementById('response-viewer');
       const iv = document.getElementById('image-viewer');
       sp.classList.add('show'); iv.style.display = 'none'; rv.style.display = 'block';
-      document.getElementById('terminal-url').textContent = `GET ${path}`;
+      
+      let finalPath = path;
+      const apiKey = document.getElementById('api-key-input').value.trim();
+      const headers = {};
+
+      if (apiKey) {
+        // Use both to demonstrate both methods work
+        headers['Authorization'] = `Bearer ${apiKey}`;
+        finalPath += (path.includes('?') ? '&' : '?') + 'api_key=' + apiKey;
+      }
+
+      document.getElementById('terminal-url').textContent = `GET ${finalPath}`;
       try {
-        const r = await fetch(path);
+        const r = await fetch(path, { headers });
         if (isXml) {
           const text = await r.text();
           rv.innerHTML = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
@@ -265,9 +291,19 @@ http GET "pinoy-dev-quotes-api.vercel.app/api/v1/search?q=hugot"</pre>
       const rv = document.getElementById('response-viewer');
       const iv = document.getElementById('image-viewer');
       sp.classList.add('show');
-      document.getElementById('terminal-url').textContent = `GET ${path}`;
+
+      let finalPath = path;
+      const apiKey = document.getElementById('api-key-input').value.trim();
+      const headers = {};
+
+      if (apiKey) {
+        headers['Authorization'] = `Bearer ${apiKey}`;
+        finalPath += (path.includes('?') ? '&' : '?') + 'api_key=' + apiKey;
+      }
+
+      document.getElementById('terminal-url').textContent = `GET ${finalPath}`;
       try {
-        const r = await fetch(path);
+        const r = await fetch(path, { headers });
         const blob = await r.blob();
         rv.style.display = 'none';
         iv.src = URL.createObjectURL(blob);
