@@ -1,4 +1,10 @@
 ---
+/**
+ * OWNS: Code Snippet Card
+ * DO: Display formatted code blocks with a copy-to-clipboard feature.
+ * DON'T: Add heavy syntax highlighting logic here (use a library if needed).
+ */
+
 export interface Props {
   lang: string;
   code: string;
@@ -16,52 +22,50 @@ const { lang, code } = Astro.props;
 
 <style>
   .snippet-card {
-    background: var(--glass-bg);
-    border: 1px solid var(--glass-border);
-    border-radius: var(--radius);
+    background: var(--color-glass-bg);
+    border: 1px solid var(--color-glass-border);
+    border-radius: var(--radius-md);
     overflow: hidden;
   }
   .snippet-card-header {
-    padding: 12px 16px;
+    padding: var(--space-3) var(--space-4);
     background: rgba(15, 23, 42, 0.6);
-    border-bottom: 1px solid var(--glass-border);
+    border-bottom: 1px solid var(--color-glass-border);
     display: flex;
     justify-content: space-between;
     align-items: center;
   }
   .snippet-lang {
-    font-size: 12px;
+    font-size: var(--font-size-sm);
     font-weight: 700;
-    color: var(--brand-400);
+    color: var(--color-brand-muted);
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
   .snippet-copy {
     background: none;
-    border: 1px solid var(--glass-border);
-    color: var(--text-muted);
+    border: 1px solid var(--color-glass-border);
+    color: var(--color-text-muted);
     padding: 4px 10px;
-    border-radius: 6px;
-    font-size: 11px;
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
     cursor: pointer;
     font-family: inherit;
-    transition: all 0.2s;
+    transition: all var(--duration-base);
   }
   .snippet-copy:hover {
-    border-color: var(--brand-400);
-    color: var(--brand-400);
+    border-color: var(--color-brand-muted);
+    color: var(--color-brand-muted);
   }
   .snippet-card pre {
-    padding: 16px;
+    padding: var(--space-4);
     margin: 0;
     font-family: 'Fira Code', monospace;
-    font-size: 12px;
+    font-size: var(--font-size-sm);
     line-height: 1.7;
-    color: var(--text-secondary);
+    color: var(--color-text-secondary);
     overflow-x: auto;
   }
-
-  /* Handle dynamic copy label via JS in the parent or a global script */
 </style>
 
 <script>
