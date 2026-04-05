@@ -169,24 +169,32 @@ v1.get('/qotd', (req, res) => {
   for(let i=0; i<today.length; i++) seed += today.charCodeAt(i);
   const qotdIndex = seed % quotes.length;
   
-  respondWithMeta(res, quotes[qotdIndex], { type: 'qotd', date: today }, 200, 'public, s-maxage=3600');
+  // QOTD: Cache for 1 hour but allow re-generation of metadata timestamp with no-cache, s-maxage=0
+  respondWithMeta(res, quotes[qotdIndex], { type: 'qotd', date: today }, 200, 'no-cache, s-maxage=0');
 });
 
 // Random Quote
 v1.get('/random', (req, res) => {
   const count = parseInt(req.query.count) || 1;
+  const tag = req.query.tag ? req.query.tag.toLowerCase().trim() : null;
   const maxSafeCount = Math.min(count, 50); // limit to 50
   
+  let pool = quotes;
+  if (tag) {
+    pool = quotes.filter(q => q.tags && q.tags.some(t => t.toLowerCase() === tag));
+    if (pool.length === 0) return res.status(404).json({ error: `No quotes found for tag: '${tag}'` });
+  }
+
   if (maxSafeCount === 1) {
-    const randomIndex = Math.floor(Math.random() * quotes.length);
-    return respondWithMeta(res, quotes[randomIndex], { is_random: true }, 200, 'no-store');
+    const randomIndex = Math.floor(Math.random() * pool.length);
+    return respondWithMeta(res, pool[randomIndex], { is_random: true, tag }, 200, 'no-store, no-cache, must-revalidate');
   }
 
   // Shuffle array and take N
-  const shuffled = [...quotes].sort(() => 0.5 - Math.random());
+  const shuffled = [...pool].sort(() => 0.5 - Math.random());
   const selected = shuffled.slice(0, maxSafeCount);
   
-  respondWithMeta(res, selected, { count: selected.length, is_random: true }, 200, 'no-store');
+  respondWithMeta(res, selected, { count: selected.length, is_random: true, tag }, 200, 'no-store, no-cache, must-revalidate');
 });
 
 // Search
@@ -212,7 +220,7 @@ v1.get('/dialect/:dialect/random', (req, res) => {
     if (filteredQuotes.length === 0) return res.status(404).json({ error: `No quotes found for dialect: '${dialect}'` });
     
     const randomIndex = Math.floor(Math.random() * filteredQuotes.length);
-    respondWithMeta(res, filteredQuotes[randomIndex], { dialect, is_random: true }, 200, 'no-store');
+    respondWithMeta(res, filteredQuotes[randomIndex], { dialect, is_random: true }, 200, 'no-store, no-cache, must-revalidate');
 });
 
 // Filter by Dialect
@@ -232,17 +240,23 @@ v1.get('/dialect/:dialect', (req, res) => {
   }
 });
 
-// Get all quotes (Pagination)
+// Get all quotes (Pagination & Filter)
 v1.get('/quotes', (req, res) => {
   const page = Math.max(1, parseInt(req.query.page) || 1);
   const limit = Math.max(1, Math.min(parseInt(req.query.limit) || 10, 100));
+  const tag = req.query.tag ? req.query.tag.toLowerCase().trim() : null;
   
+  let results = quotes;
+  if (tag) {
+    results = quotes.filter(q => q.tags && q.tags.some(t => t.toLowerCase() === tag));
+  }
+
   const startIndex = (page - 1) * limit;
   const endIndex = startIndex + limit;
-  const paginatedResults = quotes.slice(startIndex, endIndex);
+  const paginatedResults = results.slice(startIndex, endIndex);
 
   respondWithMeta(res, paginatedResults, { 
-      page, limit, total: quotes.length, total_pages: Math.ceil(quotes.length / limit)
+      page, limit, total: results.length, total_pages: Math.ceil(results.length / limit), tag
   });
 });
 
