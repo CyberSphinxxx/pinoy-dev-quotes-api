@@ -55,8 +55,9 @@ const endpoints: EndpointGroup[] = [
         <li>Public: <strong>100 req / 15m</strong></li>
         <li>Premium: <strong>1,000 req / 15m</strong></li>
       </ul>
-      <p class="auth-note">Include your key via <code>?api_key=...</code></p>
+      <p class="auth-note">Include your key via <code>Authorization: Bearer ...</code></p>
       <input type="text" id="api-key-input" placeholder="Optional API Key..." />
+      <p class="auth-request">Need a key? <a href="https://github.com/CyberSphinxxx/pinoy-dev-quotes-api/issues" target="_blank">Open an issue</a> to request one.</p>
     </div>
   </div>
 
@@ -74,7 +75,9 @@ const endpoints: EndpointGroup[] = [
   "message": "Welcome! Click any endpoint on the left.",
   "tip": "Try /api/v1/random first 🎲"
 }`}</code></pre>
-      <img id="image-viewer" alt="Generated Quote Image"/>
+      <div id="image-viewer-container" style="display: none;">
+         <img id="image-viewer" alt="Generated Quote Image"/>
+      </div>
     </div>
   </div>
 </section>
@@ -107,6 +110,9 @@ const endpoints: EndpointGroup[] = [
   .auth-box strong { color: var(--amber); }
   .auth-box ul { list-style: none; display: flex; flex-direction: column; gap: 4px; }
   .auth-note { margin-top: 8px; color: var(--text-muted); }
+  .auth-request { margin-top: 12px; font-size: 10px; color: var(--text-muted); }
+  .auth-request a { color: var(--brand-400); text-decoration: none; }
+  .auth-request a:hover { text-decoration: underline; }
   #api-key-input {
     width: 100%;
     background: var(--bg-terminal);
@@ -164,11 +170,16 @@ const endpoints: EndpointGroup[] = [
     word-break: break-word;
     color: var(--text-secondary);
   }
-  #image-viewer {
+  #image-viewer-container {
     display: none;
     width: 100%;
     border-radius: 8px;
     border: 1px solid var(--glass-border);
+    overflow: hidden;
+  }
+  #image-viewer {
+    width: 100%;
+    display: block;
   }
   .spinner {
     display: none;
@@ -246,7 +257,8 @@ const endpoints: EndpointGroup[] = [
           const blob = await response.blob();
           viewer.style.display = 'none';
           imgViewer.src = URL.createObjectURL(blob);
-          imgViewer.style.display = 'block';
+          const container = document.getElementById('image-viewer-container');
+          if (container) container.style.display = 'block';
         } else if (isXml) {
           const text = await response.text();
           viewer.textContent = text;
