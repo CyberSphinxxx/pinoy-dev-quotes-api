@@ -4,11 +4,14 @@
   "description": "A free, serverless API for Filipino developer quotes.",
   "main": "api/index.js",
   "scripts": {
-    "start": "node api/index.js",
-    "dev": "node api/index.js"
+    "dev": "node api/index.js",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:all": "concurrently \"npm run dev\" \"npm run dev:frontend\"",
+    "build": "cd frontend && npm run build",
+    "start": "node api/index.js"
   },
   "engines": {
-    "node": "24.x"
+    "node": "22.x"
   },
   "dependencies": {
     "@resvg/resvg-js": "^2.6.2",
@@ -32,5 +35,8 @@
     "tagalog"
   ],
   "author": "John Lemar Gonzales",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
 }
