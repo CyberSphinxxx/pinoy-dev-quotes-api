@@ -1,5 +1,5 @@
 const express = require('express');
-const quotes = require('../quotes.json');
+const quotes = require('../data/quotes.json');
 
 const router = express.Router();
 
