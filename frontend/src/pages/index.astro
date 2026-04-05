@@ -6,9 +6,9 @@ import CodeSnippet from '../components/CodeSnippet.astro';
 
 const snippets = [
   { lang: 'cURL', code: `# Random quote\ncurl https://pinoy-dev-quotes-api.vercel.app/api/v1/random\n\n# Search\ncurl "https://pinoy-dev-quotes-api.vercel.app/api/v1/search?q=bug"\n\n# Plain text\ncurl "https://pinoy-dev-quotes-api.vercel.app/api/v1/random?format=text"` },
-  { lang: 'JavaScript', code: `// Fetch a random quote\nconst res = await fetch(\n  'https://pinoy-dev-quotes-api.vercel.app/api/v1/random'\n);\nconst { data } = await res.json();\nconsole.log(\`"\${data.quote}" — \${data.author}\`);` },
-  { lang: 'Python', code: `import requests\n\nr = requests.get(\n    "https://pinoy-dev-quotes-api.vercel.app/api/v1/random"\n)\nquote = r.json()["data"]\nprint(f'"{quote["quote"]}" — {quote["author"]}')` },
-  { lang: 'PHP', code: `$json = file_get_contents(\n    "https://pinoy-dev-quotes-api.vercel.app/api/v1/random"\n);\n$quote = json_decode($json, true)["data"];\necho "\\"{$quote['quote']}\\" — {$quote['author']}";` },
+  { lang: 'JavaScript', code: `// Fetch a random quote\nconst res = await fetch(\n  'https://pinoy-dev-quotes-api.vercel.app/api/v1/random'\n);\nconst { data } = await res.json();\n// Handle both single object and array responses\nconst quote = Array.isArray(data) ? data[0] : data;\nconsole.log(\`"\${quote.quote}" — \${quote.author}\`);` },
+  { lang: 'Python', code: `import requests\n\nr = requests.get(\n    "https://pinoy-dev-quotes-api.vercel.app/api/v1/random"\n)\ndata = r.json()["data"]\n# Handle both single object and array responses\nquote = data[0] if isinstance(data, list) else data\nprint(f'"{quote["quote"]}" — {quote["author"]}')` },
+  { lang: 'PHP', code: `$json = file_get_contents(\n    "https://pinoy-dev-quotes-api.vercel.app/api/v1/random"\n);\n$data = json_decode($json, true)["data"];\n// Handle both single object and array responses\n$quote = is_array($data) && isset($data[0]) ? $data[0] : $data;\necho "\\"{$quote['quote']}\\" — {$quote['author']}";` },
   { lang: 'GraphQL', code: `// POST to /api/v1/graphql\n{\n  quotes(dialect: "bisaya", limit: 3) {\n    id\n    quote\n    language\n    english_translation\n    author\n    tags\n  }\n}` },
   { lang: 'HTTPie', code: `# Random quote\nhttp GET pinoy-dev-quotes-api.vercel.app/api/v1/random\n\n# Quote of the day\nhttp GET pinoy-dev-quotes-api.vercel.app/api/v1/qotd\n\n# Search for hugot\nhttp GET "pinoy-dev-quotes-api.vercel.app/api/v1/search?q=hugot"` }
 ];
