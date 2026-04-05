@@ -2,6 +2,7 @@
   {
     "id": 1,
     "dialect": "bisaya",
+    "language": "Cebuano",
     "quote": "Maypa ang bug, pirmi nimo ginapangita. Ako tawon, kalimtan lang.",
     "english_translation": "It's better to be a bug, you always search for it. Me, I'm just forgotten.",
     "author": "Anonymous Dev",
@@ -12,6 +13,7 @@
   {
     "id": 2,
     "dialect": "bisaya",
+    "language": "Cebuano",
     "quote": "Ang coding murag gugma, sakit sa ulo pero lami kung mag-work na.",
     "english_translation": "Coding is like love, it's a headache but feels good once it works.",
     "author": "Cebuano Dev",
@@ -22,6 +24,7 @@
   {
     "id": 3,
     "dialect": "bisaya",
+    "language": "Cebuano",
     "quote": "Commit na, ayaw na pag-expect nga ma-merge ka sa iyang kasing-kasing.",
     "english_translation": "Just commit, don't expect to be merged into their heart.",
     "author": "Davao Dev",
@@ -32,6 +35,7 @@
   {
     "id": 4,
     "dialect": "bisaya",
+    "language": "Cebuano",
     "quote": "Sige ka'g 'Fixing bugs' pero ang problem sa inyong relasyon, wala gihapon na-fix.",
     "english_translation": "You're always 'Fixing bugs' but the problem in your relationship still isn't fixed.",
     "author": "Bitter Dev",
@@ -42,6 +46,7 @@
   {
     "id": 5,
     "dialect": "bisaya",
+    "language": "Cebuano",
     "quote": "Dili tanan 'resolved' sa Jira, resolved na sa life.",
     "english_translation": "Not everything 'resolved' in Jira is resolved in life.",
     "author": "Senior Dev",
@@ -52,6 +57,7 @@
   {
     "id": 6,
     "dialect": "bisaya",
+    "language": "Cebuano",
     "quote": "Deploy na ta sa production, basin didto nimo makit-an ang imong forever.",
     "english_translation": "Let's deploy to production, maybe you'll find your forever there.",
     "author": "Optimistic Junior",
@@ -62,6 +68,7 @@
   {
     "id": 7,
     "dialect": "tagalog",
+    "language": "Filipino/Tagalog",
     "quote": "Para kang semicolon, laging nawawala kung kailan kailangan kita.",
     "english_translation": "You're like a semicolon, always missing when I need you.",
     "author": "Tagalog Dev",
@@ -72,6 +79,7 @@
   {
     "id": 8,
     "dialect": "tagalog",
+    "language": "Filipino/Tagalog",
     "quote": "Sana ang pag-ibig parang Git, pwedeng i-rollback pag nagkamali.",
     "english_translation": "I wish love was like Git, you could rollback when you make a mistake.",
     "author": "Modern Pinoy",
@@ -82,6 +90,7 @@
   {
     "id": 9,
     "dialect": "tagalog",
+    "language": "Filipino/Tagalog",
     "quote": "Hindi lahat ng 'Null' ay walang laman, minsan nandoon ang sakit na hindi mo makita.",
     "english_translation": "Not all 'Null' is empty, sometimes that's where the pain you can't see is.",
     "author": "Hugot King",
@@ -92,6 +101,7 @@
   {
     "id": 10,
     "dialect": "tagalog",
+    "language": "Filipino/Tagalog",
     "quote": "Ang pag-ibig ay parang JavaScript, magulo pero kailangan mong intindihin.",
     "english_translation": "Love is like JavaScript, it's messy but you have to understand it.",
     "author": "JS Enthusiast",
@@ -102,6 +112,7 @@
   {
     "id": 11,
     "dialect": "ilocano",
+    "language": "Ilocano",
     "quote": "Kasla ag-code ti agayat, narigat ngem no ag-run, naimbag.",
     "english_translation": "Loving is like coding, it's hard but when it runs, it's good.",
     "author": "Ilocano Coder",
@@ -112,6 +123,7 @@
   {
     "id": 12,
     "dialect": "ilocano",
+    "language": "Ilocano",
     "quote": "Ti bug ket kas iti problema ti biag, masapul nga annadam a biroken.",
     "english_translation": "A bug is like a life problem, you need to carefully find it.",
     "author": "Vigan Dev",
@@ -122,6 +134,7 @@
   {
     "id": 13,
     "dialect": "kapampangan",
+    "language": "Kapampangan",
     "quote": "Anting pamag-debug ing bie, dakal a errors pero kailangan e ka susuko.",
     "english_translation": "Life is like debugging, lots of errors but you shouldn't give up.",
     "author": "Pampanga Dev",
@@ -132,6 +145,7 @@
   {
     "id": 14,
     "dialect": "kapampangan",
+    "language": "Kapampangan",
     "quote": "Ing deploy parang confession, pag sinabi mu na, alang bawian.",
     "english_translation": "Deploying is like a confession, once you say it, there's no taking it back.",
     "author": "Clark Dev",
@@ -142,6 +156,7 @@
   {
     "id": 15,
     "dialect": "waray",
+    "language": "Waray-Waray",
     "quote": "An code pareho han gugma, kun diri ka mag-try, diri ka mahahingadto.",
     "english_translation": "Code is like love, if you don't try, you'll never get there.",
     "author": "Tacloban Dev",
@@ -152,6 +167,7 @@
   {
     "id": 16,
     "dialect": "waray",
+    "language": "Waray-Waray",
     "quote": "Diri tanan nga compile, magiging successful ha production.",
     "english_translation": "Not everything that compiles will be successful in production.",
     "author": "Eastern Visayas Coder",
@@ -162,6 +178,7 @@
   {
     "id": 17,
     "dialect": "hiligaynon",
+    "language": "Hiligaynon",
     "quote": "Ang code pareho sa relasyon, kinahanglan mo i-maintain o mawala.",
     "english_translation": "Code is like a relationship, you need to maintain it or it falls apart.",
     "author": "Iloilo Dev",
@@ -172,6 +189,7 @@
   {
     "id": 18,
     "dialect": "hiligaynon",
+    "language": "Hiligaynon",
     "quote": "Wala ka man error, indi buot silingon nga husto na ang code mo.",
     "english_translation": "Having no errors doesn't mean your code is correct.",
     "author": "Negros Dev",
@@ -182,6 +200,7 @@
   {
     "id": 19,
     "dialect": "bikolano",
+    "language": "Bikol",
     "quote": "An programming arog kan pagpadagos sa buhay, kaipuhan mong mag-adapt.",
     "english_translation": "Programming is like continuing in life, you need to adapt.",
     "author": "Naga Dev",
@@ -192,6 +211,7 @@
   {
     "id": 20,
     "dialect": "bikolano",
+    "language": "Bikol",
     "quote": "Dai mo masasabi na maray an code mo kun dai mo ini na-test.",
     "english_translation": "You can't say your code is good if you haven't tested it.",
     "author": "Legazpi Coder",
